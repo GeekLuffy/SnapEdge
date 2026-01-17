@@ -31,6 +31,48 @@
 
 ---
 
+## 🔌 Developer API (v1)
+
+SnapEdge is built with a developer-first approach. You can programmatically upload images and retrieve metadata using our versioned REST API.
+
+### 1. Upload Image
+**Endpoint:** `POST /api/v1/upload`  
+**Content-Type:** `multipart/form-data`
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `file` | File | Yes | The image file to upload. |
+| `customId` | String | No | Custom vanity slug for the link. |
+
+**Example Request (cURL):**
+```bash
+curl -X POST https://your-snapedge.com/api/v1/upload \
+  -F "file=@/path/to/image.jpg" \
+  -F "customId=my-awesome-link"
+```
+
+### 2. Get Image Metadata
+**Endpoint:** `GET /api/v1/info/[id]`
+
+**Example Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "my-awesome-link",
+    "url": "https://snapedge.com/i/my-awesome-link",
+    "views": 42,
+    "created_at": 1705500000000,
+    "metadata": {
+      "size": 102400,
+      "type": "image/jpeg"
+    }
+  }
+}
+```
+
+---
+
 ## 🤝 Open Source & Contributions
 
 SnapEdge is **Open Source** and built for the community! We are actively looking for collaborators and contributors to make this the ultimate image hosting solution.
