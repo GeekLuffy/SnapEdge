@@ -1,0 +1,19 @@
+import './globals.css';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'SnapEdge | Lightning Fast Image Hosting',
+    description: 'Scalable, edge-based image hosting system that minimizes server bandwidth by redirecting directly to distributed storage infrastructure.',
+};
+
+export default function RootLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
+    return (
+        <html lang="en">
+            <body>{children}</body>
+        </html>
+    );
+}

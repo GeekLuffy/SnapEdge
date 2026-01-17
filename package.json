@@ -1,0 +1,27 @@
+{
+  "name": "snapedge",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@upstash/redis": "^1.36.1",
+    "@vercel/kv": "^3.0.0",
+    "framer-motion": "latest",
+    "lucide-react": "^0.562.0",
+    "next": "latest",
+    "qrcode.react": "^4.2.0",
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "typescript": "latest"
+  }
+}
