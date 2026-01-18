@@ -5,7 +5,8 @@ import Link from 'next/link';
 import {
     Upload, Copy, Check, Shield, Zap,
     Globe, History, QrCode, Settings,
-    Code2, ArrowRight, ExternalLink, Image as ImageIcon
+    Code2, ArrowRight, ExternalLink, Image as ImageIcon,
+    Sun, Moon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
@@ -26,18 +27,31 @@ export default function Home() {
     const [showQr, setShowQr] = useState(false);
     const [isHistoryOpen, setIsHistoryOpen] = useState(false);
     const [showToast, setShowToast] = useState(false);
+    const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
-    // Load history from localStorage
+    // Load history and theme from localStorage
     useEffect(() => {
-        const saved = localStorage.getItem('pixedge_history');
-        if (saved) {
-            try {
-                setHistory(JSON.parse(saved));
-            } catch (e) {
-                console.error('Failed to load history', e);
-            }
+        const savedHistory = localStorage.getItem('pixedge_history');
+        if (savedHistory) {
+            try { setHistory(JSON.parse(savedHistory)); } catch (e) { console.error('Failed to load history', e); }
+        }
+
+        const savedTheme = localStorage.getItem('pixedge_theme') as 'dark' | 'light';
+        if (savedTheme) {
+            setTheme(savedTheme);
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        } else {
+            // Default to dark if no theme is saved
+            document.documentElement.setAttribute('data-theme', 'dark');
         }
     }, []);
+
+    const toggleTheme = () => {
+        const newTheme = theme === 'dark' ? 'light' : 'dark';
+        setTheme(newTheme);
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('pixedge_theme', newTheme);
+    };
 
     const saveToHistory = (item: HistoryItem) => {
         const newHistory = [item, ...history].slice(0, 5); // Keep last 5
@@ -130,21 +144,21 @@ export default function Home() {
                     position: 'absolute',
                     top: '2rem',
                     left: '50%',
-                    background: 'rgba(5, 5, 5, 0.6)',
+                    background: 'var(--panel-bg)',
                     backdropFilter: 'blur(30px)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    border: '1px solid var(--border-color)',
                     borderRadius: '100px',
                     padding: '12px 32px',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '40px',
                     zIndex: 9999,
-                    boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
+                    boxShadow: '0 20px 50px rgba(0,0,0,0.2)',
                     whiteSpace: 'nowrap'
                 }}
             >
                 <Link href="/" style={{
-                    color: 'white',
+                    color: 'var(--text-main)',
                     textDecoration: 'none',
                     fontWeight: '800',
                     fontSize: '1.6rem',
@@ -153,11 +167,11 @@ export default function Home() {
                     alignItems: 'center',
                     gap: '10px'
                 }}>
-                    <Zap size={24} fill="white" />
+                    <Zap size={24} fill="var(--accent-primary)" color="var(--accent-primary)" />
                     PixEdge
                 </Link>
                 <Link href="/docs" style={{
-                    color: 'rgba(255,255,255,0.7)',
+                    color: 'var(--text-muted)',
                     textDecoration: 'none',
                     fontSize: '1rem',
                     fontWeight: '600',
@@ -165,12 +179,28 @@ export default function Home() {
                     alignItems: 'center',
                     gap: '8px',
                     transition: 'color 0.2s'
-                }}
-                    onMouseOver={(e) => e.currentTarget.style.color = 'white'}
-                    onMouseOut={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.7)'}
-                >
+                }}>
                     <Code2 size={18} /> API Docs
                 </Link>
+
+                <button
+                    onClick={toggleTheme}
+                    style={{
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        border: '1px solid var(--border-color)',
+                        borderRadius: '50px',
+                        width: '40px',
+                        height: '40px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        color: 'var(--text-main)',
+                        transition: 'all 0.3s'
+                    }}
+                >
+                    {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+                </button>
             </motion.nav>
 
             <main className="main-container">
@@ -227,7 +257,7 @@ export default function Home() {
                             left: '12px',
                             top: '50%',
                             transform: 'translateY(-50%)',
-                            color: 'rgba(255,255,255,0.3)',
+                            color: 'var(--text-muted)',
                             display: 'flex',
                             alignItems: 'center',
                             gap: '8px'
@@ -241,17 +271,17 @@ export default function Home() {
                             onChange={(e) => setCustomId(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-'))}
                             style={{
                                 width: '100%',
-                                background: 'rgba(0,0,0,0.3)',
-                                border: '1px solid rgba(255,255,255,0.05)',
+                                background: 'var(--input-bg)',
+                                border: '1px solid var(--border-color)',
                                 borderRadius: '16px',
                                 padding: '12px 12px 12px 40px',
-                                color: 'white',
+                                color: 'var(--text-main)',
                                 fontSize: '0.9rem',
                                 outline: 'none',
-                                transition: 'border-color 0.2s'
+                                transition: 'all 0.2s'
                             }}
-                            onFocus={(e) => e.target.style.borderColor = 'rgba(139, 92, 246, 0.5)'}
-                            onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.05)'}
+                            onFocus={(e) => e.target.style.borderColor = 'var(--accent-primary)'}
+                            onBlur={(e) => e.target.style.borderColor = 'var(--border-color)'}
                         />
                     </div>
 
@@ -276,7 +306,7 @@ export default function Home() {
 
                         <div className="upload-text">
                             <h3>{uploading ? 'Blasting at the edge...' : 'Drop your image here'}</h3>
-                            <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.8rem' }}>or click to browse your files</p>
+                            <p style={{ color: 'var(--text-muted)', opacity: 0.6, fontSize: '0.8rem' }}>or click to browse your files</p>
                         </div>
 
                         {uploading && (
@@ -306,7 +336,7 @@ export default function Home() {
                                     <div style={{ display: 'flex', gap: '8px' }}>
                                         <button
                                             className="copy-btn"
-                                            style={{ background: 'rgba(255,255,255,0.05)', color: '#a1a1aa' }}
+                                            style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}
                                             onClick={() => setShowQr(!showQr)}
                                         >
                                             <QrCode size={18} />
@@ -353,10 +383,10 @@ export default function Home() {
                             style={{
                                 width: '100%',
                                 background: 'transparent',
-                                border: '1px solid rgba(255,255,255,0.05)',
+                                border: '1px solid var(--border-color)',
                                 padding: '12px',
                                 borderRadius: '100px',
-                                color: 'rgba(255,255,255,0.5)',
+                                color: 'var(--text-muted)',
                                 fontSize: '0.8rem',
                                 cursor: 'pointer',
                                 display: 'flex',
@@ -365,7 +395,7 @@ export default function Home() {
                                 gap: '8px',
                                 transition: 'all 0.2s'
                             }}
-                            onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
+                            onMouseOver={(e) => e.currentTarget.style.background = 'var(--input-bg)'}
                             onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
                         >
                             <History size={14} />
@@ -383,13 +413,13 @@ export default function Home() {
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                         {history.map((item) => (
                                             <div key={item.id} style={{
-                                                background: 'rgba(255,255,255,0.02)',
+                                                background: 'var(--history-item-bg)',
                                                 padding: '8px 12px',
                                                 borderRadius: '20px',
                                                 display: 'flex',
                                                 alignItems: 'center',
                                                 justifyContent: 'space-between',
-                                                border: '1px solid rgba(255,255,255,0.03)'
+                                                border: '1px solid var(--border-color)'
                                             }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, overflow: 'hidden' }}>
                                                     <div style={{
@@ -397,7 +427,7 @@ export default function Home() {
                                                         height: '44px',
                                                         borderRadius: '12px',
                                                         overflow: 'hidden',
-                                                        background: 'rgba(0,0,0,0.5)',
+                                                        background: 'rgba(139, 92, 246, 0.05)',
                                                         flexShrink: 0
                                                     }}>
                                                         <img
@@ -407,10 +437,10 @@ export default function Home() {
                                                         />
                                                     </div>
                                                     <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                                                        <a href={`/i/${item.id}`} target="_blank" style={{ color: 'white', textDecoration: 'none', fontSize: '0.85rem', fontWeight: '500', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                                        <a href={`/i/${item.id}`} target="_blank" style={{ color: 'var(--text-main)', textDecoration: 'none', fontSize: '0.85rem', fontWeight: '500', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                             /i/{item.id}
                                                         </a>
-                                                        <span style={{ color: 'rgba(255,255,255,0.2)', fontSize: '0.7rem' }}>
+                                                        <span style={{ color: 'var(--text-muted)', fontSize: '0.7rem' }}>
                                                             {new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                         </span>
                                                     </div>
@@ -434,25 +464,25 @@ export default function Home() {
                     <motion.div className="feature-card" initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}>
                         <Zap size={28} color="#8b5cf6" style={{ marginBottom: '1.5rem' }} />
                         <h3 style={{ marginBottom: '0.8rem' }}>Edge Delivery</h3>
-                        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem', lineHeight: '1.5' }}>Direct-to-CDN redirection ensures your images load instantly for users globally.</p>
+                        <p style={{ color: 'var(--card-subtext)', fontSize: '0.9rem', lineHeight: '1.5' }}>Direct-to-CDN redirection ensures your images load instantly for users globally.</p>
                     </motion.div>
                     <motion.div className="feature-card" initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.1 }}>
                         <Shield size={28} color="#06b6d4" style={{ marginBottom: '1.5rem' }} />
                         <h3 style={{ marginBottom: '0.8rem' }}>Privacy Proxy</h3>
-                        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem', lineHeight: '1.5' }}>Proxied delivery obfuscates origins, keeping your Telegram backend completely hidden.</p>
+                        <p style={{ color: 'var(--card-subtext)', fontSize: '0.9rem', lineHeight: '1.5' }}>Proxied delivery obfuscates origins, keeping your Telegram backend completely hidden.</p>
                     </motion.div>
                     <motion.div className="feature-card" initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
                         <Code2 size={28} color="#eab308" style={{ marginBottom: '1.5rem' }} />
                         <h3 style={{ marginBottom: '0.8rem' }}>Rich API</h3>
-                        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.9rem', lineHeight: '1.5' }}>Fully document REST API for programmatic uploads and metadata retrieval.</p>
+                        <p style={{ color: 'var(--card-subtext)', fontSize: '0.9rem', lineHeight: '1.5' }}>Fully document REST API for programmatic uploads and metadata retrieval.</p>
                     </motion.div>
                 </div>
 
                 <footer className="footer">
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px', marginBottom: '1rem' }}>
-                        <Link href="/docs" style={{ color: '#666' }}>API</Link>
-                        <a href="https://github.com" style={{ color: '#666' }}>GitHub</a>
-                        <a href="#" style={{ color: '#666' }}>Status</a>
+                        <Link href="/docs" style={{ color: 'var(--text-muted)' }}>API</Link>
+                        <a href="https://github.com/GeekLuffy" style={{ color: 'var(--text-muted)' }}>GitHub</a>
+                        <a href="#" style={{ color: 'var(--text-muted)' }}>Status</a>
                     </div>
                     <p>© {new Date().getFullYear()} PixEdge — Built with ✨ by TeamEdge</p>
                 </footer>
@@ -467,16 +497,17 @@ export default function Home() {
                             style={{
                                 position: 'fixed',
                                 bottom: '3rem',
-                                background: 'rgba(20, 20, 20, 0.8)',
+                                background: 'var(--toast-bg)',
                                 backdropFilter: 'blur(20px)',
-                                border: '1px solid rgba(255, 255, 255, 0.1)',
+                                border: '1px solid var(--border-color)',
                                 padding: '12px 24px',
                                 borderRadius: '100px',
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: '12px',
-                                boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
-                                zIndex: 1000
+                                boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+                                zIndex: 1000,
+                                color: 'var(--text-main)'
                             }}
                         >
                             <div style={{ background: '#10b981', borderRadius: '50%', padding: '4px', display: 'flex' }}>

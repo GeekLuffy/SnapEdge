@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     Code2, Terminal, Cpu, ArrowLeft, Copy, Check,
     Book, Zap, Shield, Globe, Layers, Server,
-    Menu, X, Activity, AlertCircle, Box
+    Menu, X, Activity, AlertCircle, Box,
+    Sun, Moon
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -17,10 +18,23 @@ export default function Docs() {
     const [activeLang, setActiveLang] = useState<Language>('bash');
     const [activeSection, setActiveSection] = useState('getting-started');
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
     useEffect(() => {
         setBaseUrl(window.location.origin);
+        const savedTheme = localStorage.getItem('pixedge_theme') as 'dark' | 'light';
+        if (savedTheme) {
+            setTheme(savedTheme);
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        }
     }, []);
+
+    const toggleTheme = () => {
+        const newTheme = theme === 'dark' ? 'light' : 'dark';
+        setTheme(newTheme);
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('pixedge_theme', newTheme);
+    };
 
     const copyCode = (text: string, id: string) => {
         navigator.clipboard.writeText(text);
@@ -93,7 +107,7 @@ func main() {
                 borderRadius: '10px',
                 background: activeSection === id ? 'rgba(139, 92, 246, 0.1)' : 'transparent',
                 border: 'none',
-                color: activeSection === id ? '#8b5cf6' : '#71717a',
+                color: activeSection === id ? '#8b5cf6' : 'var(--text-muted)',
                 cursor: 'pointer',
                 fontSize: '0.9rem',
                 fontWeight: activeSection === id ? '600' : '400',
@@ -107,22 +121,27 @@ func main() {
 
     return (
         <main style={{
-            background: '#050505',
+            background: 'var(--bg-color)',
             minHeight: '100vh',
-            color: '#e4e4e7',
+            color: 'var(--text-main)',
             display: 'flex',
             fontFamily: "'Outfit', sans-serif"
         }}>
             {/* Mobile Header */}
             <header className="mobile-header">
-                <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'white' }}>
-                    <Zap size={18} fill="#8b5cf6" color="#8b5cf6" />
+                <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--text-main)' }}>
+                    <Zap size={18} fill="var(--accent-primary)" color="var(--accent-primary)" />
                     <span style={{ fontWeight: '800', fontSize: '1rem' }}>PixEdge</span>
                 </Link>
-                <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="menu-toggle" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#8b5cf6', textTransform: 'uppercase', letterSpacing: '1px' }}>Menu</span>
-                    {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-                </button>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <button onClick={toggleTheme} style={{ background: 'transparent', border: 'none', color: 'var(--text-main)', cursor: 'pointer' }}>
+                        {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+                    </button>
+                    <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="menu-toggle" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: 'var(--accent-primary)', textTransform: 'uppercase', letterSpacing: '1px' }}>Menu</span>
+                        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                    </button>
+                </div>
             </header>
 
             {/* Sidebar */}
@@ -135,30 +154,53 @@ func main() {
                 </Link>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <p style={{ fontSize: '0.7rem', fontWeight: 'bold', color: '#3f3f46', marginLeft: '12px', marginBottom: '8px', textTransform: 'uppercase' }}>Introduction</p>
+                    <p style={{ fontSize: '0.7rem', fontWeight: 'bold', color: 'var(--text-muted)', opacity: 0.6, marginLeft: '12px', marginBottom: '8px', textTransform: 'uppercase' }}>Introduction</p>
                     <SidebarItem id="getting-started" label="Getting Started" icon={Book} />
                     <SidebarItem id="authentication" label="Authentication" icon={Shield} />
 
-                    <p style={{ fontSize: '0.7rem', fontWeight: 'bold', color: '#3f3f46', marginLeft: '12px', marginBottom: '8px', marginTop: '1.5rem', textTransform: 'uppercase' }}>Endpoints</p>
+                    <p style={{ fontSize: '0.7rem', fontWeight: 'bold', color: 'var(--text-muted)', opacity: 0.6, marginLeft: '12px', marginBottom: '8px', marginTop: '1.5rem', textTransform: 'uppercase' }}>Endpoints</p>
                     <SidebarItem id="upload" label="Upload Image" icon={Terminal} />
                     <SidebarItem id="info" label="Get Metadata" icon={Cpu} />
 
-                    <p style={{ fontSize: '0.7rem', fontWeight: 'bold', color: '#3f3f46', marginLeft: '12px', marginBottom: '8px', marginTop: '1.5rem', textTransform: 'uppercase' }}>Reference</p>
+                    <p style={{ fontSize: '0.7rem', fontWeight: 'bold', color: 'var(--text-muted)', opacity: 0.6, marginLeft: '12px', marginBottom: '8px', marginTop: '1.5rem', textTransform: 'uppercase' }}>Reference</p>
                     <SidebarItem id="rate-limiting" label="Rate Limiting" icon={Activity} />
                     <SidebarItem id="errors" label="Error Codes" icon={AlertCircle} />
                     <SidebarItem id="sdk" label="SDKs" icon={Box} />
+                    <div style={{ marginTop: 'auto', paddingTop: '2rem', display: 'flex', justifyContent: 'center' }}>
+                        <button
+                            onClick={toggleTheme}
+                            style={{
+                                background: 'var(--panel-bg)',
+                                border: '1px solid var(--border-color)',
+                                borderRadius: '12px',
+                                padding: '10px 20px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '10px',
+                                color: 'var(--text-main)',
+                                cursor: 'pointer',
+                                width: '100%',
+                                justifyContent: 'center',
+                                fontWeight: '600',
+                                transition: 'all 0.3s'
+                            }}
+                        >
+                            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+                            {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+                        </button>
+                    </div>
                 </div>
             </aside>
 
             {/* Main Content */}
             <div className="content-wrapper">
                 <header style={{ marginBottom: '4rem' }}>
-                    <Link href="/" style={{ color: '#71717a', textDecoration: 'none', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}>
+                    <Link href="/" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}>
                         <ArrowLeft size={16} /> Home
                     </Link>
-                    <h1 style={{ fontSize: '3rem', fontWeight: '800', color: 'white', marginBottom: '1rem' }}>Documentation</h1>
-                    <p style={{ color: '#a1a1aa', fontSize: '1.1rem', marginBottom: '1rem' }}>API v1.0.0 — The complete reference for PixEdge developers.</p>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#3f3f46', fontSize: '0.85rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    <h1 style={{ fontSize: '3rem', fontWeight: '800', color: 'var(--text-main)', marginBottom: '1rem' }}>Documentation</h1>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', marginBottom: '1rem' }}>API v1.0.0 — The complete reference for PixEdge developers.</p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                         <ArrowLeft size={14} style={{ transform: 'rotate(90deg)' }} />
                         <span>Navigate using the sidebar to explore endpoints</span>
                     </div>
@@ -167,8 +209,8 @@ func main() {
                 <div style={{ maxWidth: '800px' }}>
                     {activeSection === 'getting-started' && (
                         <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-                            <h2 style={{ fontSize: '1.8rem', color: 'white', marginBottom: '1.5rem' }}>Getting Started</h2>
-                            <p style={{ color: '#a1a1aa', lineHeight: '1.7', marginBottom: '1.5rem' }}>
+                            <h2 style={{ fontSize: '1.8rem', color: 'var(--text-main)', marginBottom: '1.5rem' }}>Getting Started</h2>
+                            <p style={{ color: 'var(--text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
                                 PixEdge provides a high-performance REST API for uploading and managing images via our Telegram-backed edge storage.
                                 Our storage is 100% free, decentralized, and infinitely scalable.
                             </p>
@@ -192,8 +234,8 @@ func main() {
                     )}
                     {activeSection === 'authentication' && (
                         <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-                            <h2 style={{ fontSize: '1.8rem', color: 'white', marginBottom: '1.5rem' }}>Authentication</h2>
-                            <p style={{ color: '#a1a1aa', lineHeight: '1.7', marginBottom: '1.5rem' }}>
+                            <h2 style={{ fontSize: '1.8rem', color: 'var(--text-main)', marginBottom: '1.5rem' }}>Authentication</h2>
+                            <p style={{ color: 'var(--text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
                                 Currently, the SnapEdge Public API is **open access**. No API keys are required to upload or retrieve image metadata.
                                 However, to prevent abuse, we implement global rate limiting based on IP addresses.
                             </p>
@@ -206,7 +248,7 @@ func main() {
                             }}>
                                 <Server size={20} style={{ marginBottom: '10px' }} />
                                 <h4 style={{ marginBottom: '4px' }}>Upcoming: Private Keys</h4>
-                                <p style={{ fontSize: '0.9rem', color: '#a1a1aa' }}>
+                                <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>
                                     We are working on a dashboard feature to allow developers to generate private API keys for higher rate limits and image management.
                                 </p>
                             </div>
@@ -217,17 +259,17 @@ func main() {
                         <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1.5rem' }}>
                                 <span style={{ background: '#3b82f6', color: 'white', fontSize: '0.7rem', fontWeight: 'bold', padding: '4px 8px', borderRadius: '4px' }}>GET</span>
-                                <h2 style={{ fontSize: '1.8rem', color: 'white', margin: 0 }}>/api/v1/info/[id]</h2>
+                                <h2 style={{ fontSize: '1.8rem', color: 'var(--text-main)', margin: 0 }}>/api/v1/info/[id]</h2>
                             </div>
 
-                            <p style={{ color: '#a1a1aa', lineHeight: '1.7', marginBottom: '2rem' }}>
+                            <p style={{ color: 'var(--text-muted)', lineHeight: '1.7', marginBottom: '2rem' }}>
                                 Retrieve real-time statistics and deep metadata for any image hosted on SnapEdge.
                             </p>
 
-                            <div style={{ background: '#0a0a0a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '20px', padding: '20px' }}>
-                                <div style={{ marginBottom: '10px', color: '#71717a', fontSize: '0.8rem' }}>RESPONSE SCHEMA</div>
+                            <div style={{ background: 'var(--code-bg)', border: '1px solid var(--border-color)', borderRadius: '20px', padding: '20px' }}>
+                                <div style={{ marginBottom: '10px', color: 'var(--text-muted)', opacity: 0.6, fontSize: '0.8rem' }}>RESPONSE SCHEMA</div>
                                 <pre style={{ margin: 0 }}>
-                                    <code style={{ fontFamily: "'JetBrains Mono', monospace", color: '#d1d1d6', fontSize: '0.85rem' }}>{`{
+                                    <code style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--code-text-color)', fontSize: '0.85rem' }}>{`{
   "success": true,
   "data": {
     "id": "example-id",
@@ -249,38 +291,38 @@ func main() {
                         <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1.5rem' }}>
                                 <span style={{ background: '#10b981', color: 'white', fontSize: '0.7rem', fontWeight: 'bold', padding: '4px 8px', borderRadius: '4px' }}>POST</span>
-                                <h2 style={{ fontSize: '1.8rem', color: 'white', margin: 0 }}>/api/v1/upload</h2>
+                                <h2 style={{ fontSize: '1.8rem', color: 'var(--text-main)', margin: 0 }}>/api/v1/upload</h2>
                             </div>
 
-                            <p style={{ color: '#a1a1aa', lineHeight: '1.7', marginBottom: '2rem' }}>
+                            <p style={{ color: 'var(--text-muted)', lineHeight: '1.7', marginBottom: '2rem' }}>
                                 This endpoint allows you to upload an image file. It returns a clean URL that utilizes our edge redirection proxy.
                             </p>
 
-                            <h4 style={{ marginBottom: '1rem', color: '#71717a', fontSize: '0.8rem', textTransform: 'uppercase' }}>Request Body</h4>
+                            <h4 style={{ marginBottom: '1rem', color: 'var(--text-muted)', fontSize: '0.8rem', textTransform: 'uppercase' }}>Request Body</h4>
                             <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '2rem' }}>
                                 <thead>
-                                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <th style={{ textAlign: 'left', padding: '12px', color: '#71717a', fontSize: '0.9rem' }}>Field</th>
-                                        <th style={{ textAlign: 'left', padding: '12px', color: '#71717a', fontSize: '0.9rem' }}>Type</th>
-                                        <th style={{ textAlign: 'left', padding: '12px', color: '#71717a', fontSize: '0.9rem' }}>Description</th>
+                                    <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
+                                        <th style={{ textAlign: 'left', padding: '12px', color: 'var(--text-muted)', fontSize: '0.9rem' }}>Field</th>
+                                        <th style={{ textAlign: 'left', padding: '12px', color: 'var(--text-muted)', fontSize: '0.9rem' }}>Type</th>
+                                        <th style={{ textAlign: 'left', padding: '12px', color: 'var(--text-muted)', fontSize: '0.9rem' }}>Description</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <td style={{ padding: '12px', fontFamily: 'monospace', color: '#8b5cf6' }}>file</td>
-                                        <td style={{ padding: '12px', color: '#a1a1aa' }}>File</td>
-                                        <td style={{ padding: '12px', color: '#a1a1aa' }}>Multipart image file (max 20MB)</td>
+                                    <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
+                                        <td style={{ padding: '12px', fontFamily: 'monospace', color: 'var(--accent-primary)' }}>file</td>
+                                        <td style={{ padding: '12px', color: 'var(--text-muted)' }}>File</td>
+                                        <td style={{ padding: '12px', color: 'var(--text-muted)' }}>Multipart image file (max 20MB)</td>
                                     </tr>
-                                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <td style={{ padding: '12px', fontFamily: 'monospace', color: '#8b5cf6' }}>customId</td>
-                                        <td style={{ padding: '12px', color: '#a1a1aa' }}>String</td>
-                                        <td style={{ padding: '12px', color: '#a1a1aa' }}>Optional vanity slug for the link</td>
+                                    <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
+                                        <td style={{ padding: '12px', fontFamily: 'monospace', color: 'var(--accent-primary)' }}>customId</td>
+                                        <td style={{ padding: '12px', color: 'var(--text-muted)' }}>String</td>
+                                        <td style={{ padding: '12px', color: 'var(--text-muted)' }}>Optional vanity slug for the link</td>
                                     </tr>
                                 </tbody>
                             </table>
 
-                            <div style={{ background: '#0a0a0a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '20px', overflow: 'hidden' }}>
-                                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px 20px', display: 'flex', gap: '20px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                            <div style={{ background: 'var(--code-bg)', border: '1px solid var(--border-color)', borderRadius: '20px', overflow: 'hidden' }}>
+                                <div style={{ background: 'var(--panel-header-bg)', padding: '12px 20px', display: 'flex', gap: '20px', borderBottom: '1px solid var(--border-color)' }}>
                                     {(['bash', 'python', 'javascript'] as Language[]).map(lang => (
                                         <button
                                             key={lang}
@@ -288,7 +330,7 @@ func main() {
                                             style={{
                                                 background: 'transparent',
                                                 border: 'none',
-                                                color: activeLang === lang ? '#8b5cf6' : '#71717a',
+                                                color: activeLang === lang ? '#8b5cf6' : 'var(--text-muted)',
                                                 fontSize: '0.8rem',
                                                 fontWeight: 'bold',
                                                 cursor: 'pointer',
@@ -301,22 +343,22 @@ func main() {
                                         </button>
                                     ))}
                                     <div style={{ marginLeft: 'auto' }}>
-                                        <button onClick={() => copyCode(snippets[activeLang as keyof typeof snippets] || '', 'main')} style={{ background: 'transparent', border: 'none', color: '#71717a', cursor: 'pointer' }}>
+                                        <button onClick={() => copyCode(snippets[activeLang as keyof typeof snippets] || '', 'main')} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
                                             {copied === 'main' ? <Check size={16} color="#10b981" /> : <Copy size={16} />}
                                         </button>
                                     </div>
                                 </div>
                                 <pre style={{ padding: '24px', fontSize: '0.9rem', margin: 0, overflowX: 'auto', background: 'transparent' }}>
-                                    <code style={{ fontFamily: "'JetBrains Mono', monospace", color: '#d1d1d6', lineHeight: '1.6' }}>
+                                    <code style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--code-text-color)', lineHeight: '1.6' }}>
                                         {snippets[activeLang as keyof typeof snippets]}
                                     </code>
                                 </pre>
                             </div>
 
-                            <h4 style={{ marginTop: '3rem', marginBottom: '1rem', color: '#71717a', fontSize: '0.8rem', textTransform: 'uppercase' }}>Response Example</h4>
-                            <div style={{ background: '#0a0a0a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '20px', padding: '20px' }}>
+                            <h4 style={{ marginTop: '3rem', marginBottom: '1rem', color: 'var(--text-muted)', opacity: 0.6, fontSize: '0.8rem', textTransform: 'uppercase' }}>Response Example</h4>
+                            <div style={{ background: 'var(--code-bg)', border: '1px solid var(--border-color)', borderRadius: '20px', padding: '20px' }}>
                                 <pre style={{ margin: 0 }}>
-                                    <code style={{ fontFamily: "'JetBrains Mono', monospace", color: '#10b981', fontSize: '0.85rem' }}>{responseExample}</code>
+                                    <code style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--code-text-color)', fontSize: '0.85rem' }}>{responseExample}</code>
                                 </pre>
                             </div>
                         </motion.section>
@@ -324,32 +366,32 @@ func main() {
 
                     {activeSection === 'rate-limiting' && (
                         <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-                            <h2 style={{ fontSize: '1.8rem', color: 'white', marginBottom: '1.5rem' }}>Rate Limiting</h2>
-                            <p style={{ color: '#a1a1aa', lineHeight: '1.7', marginBottom: '1.5rem' }}>
+                            <h2 style={{ fontSize: '1.8rem', color: 'var(--text-main)', marginBottom: '1.5rem' }}>Rate Limiting</h2>
+                            <p style={{ color: 'var(--text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
                                 To ensure peak performance for all PixEdge users, we implement a fair-use rate limiting policy. Limits are applied per IP address.
                             </p>
                             <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '2rem' }}>
                                 <thead>
-                                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <th style={{ textAlign: 'left', padding: '12px', color: '#71717a', fontSize: '0.9rem' }}>Tier</th>
-                                        <th style={{ textAlign: 'left', padding: '12px', color: '#71717a', fontSize: '0.9rem' }}>Limit</th>
-                                        <th style={{ textAlign: 'left', padding: '12px', color: '#71717a', fontSize: '0.9rem' }}>Window</th>
+                                    <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
+                                        <th style={{ textAlign: 'left', padding: '12px', color: 'var(--text-muted)', fontSize: '0.9rem' }}>Tier</th>
+                                        <th style={{ textAlign: 'left', padding: '12px', color: 'var(--text-muted)', fontSize: '0.9rem' }}>Limit</th>
+                                        <th style={{ textAlign: 'left', padding: '12px', color: 'var(--text-muted)', fontSize: '0.9rem' }}>Window</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <td style={{ padding: '12px', color: 'white' }}>Public (Upload)</td>
-                                        <td style={{ padding: '12px', color: '#a1a1aa' }}>20 requests</td>
-                                        <td style={{ padding: '12px', color: '#a1a1aa' }}>1 minute</td>
+                                    <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
+                                        <td style={{ padding: '12px', color: 'var(--text-main)' }}>Public (Upload)</td>
+                                        <td style={{ padding: '12px', color: 'var(--text-muted)' }}>20 requests</td>
+                                        <td style={{ padding: '12px', color: 'var(--text-muted)' }}>1 minute</td>
                                     </tr>
-                                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <td style={{ padding: '12px', color: 'white' }}>Public (Info)</td>
-                                        <td style={{ padding: '12px', color: '#a1a1aa' }}>60 requests</td>
-                                        <td style={{ padding: '12px', color: '#a1a1aa' }}>1 minute</td>
+                                    <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
+                                        <td style={{ padding: '12px', color: 'var(--text-main)' }}>Public (Info)</td>
+                                        <td style={{ padding: '12px', color: 'var(--text-muted)' }}>60 requests</td>
+                                        <td style={{ padding: '12px', color: 'var(--text-muted)' }}>1 minute</td>
                                     </tr>
                                 </tbody>
                             </table>
-                            <p style={{ color: '#71717a', fontSize: '0.9rem' }}>
+                            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
                                 Exceeding these limits will result in a <code style={{ color: '#ef4444' }}>429 Too Many Requests</code> response.
                             </p>
                         </motion.section>
@@ -357,40 +399,40 @@ func main() {
 
                     {activeSection === 'errors' && (
                         <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-                            <h2 style={{ fontSize: '1.8rem', color: 'white', marginBottom: '1.5rem' }}>Error Codes</h2>
-                            <p style={{ color: '#a1a1aa', lineHeight: '1.7', marginBottom: '2rem' }}>
+                            <h2 style={{ fontSize: '1.8rem', color: 'var(--text-main)', marginBottom: '1.5rem' }}>Error Codes</h2>
+                            <p style={{ color: 'var(--text-muted)', lineHeight: '1.7', marginBottom: '2rem' }}>
                                 PixEdge uses standard HTTP response codes to indicate the success or failure of an API request. All error responses follow this JSON structure:
                             </p>
-                            <div style={{ background: '#0a0a0a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '20px', padding: '20px', marginBottom: '2rem' }}>
+                            <div style={{ background: 'var(--code-bg)', border: '1px solid var(--border-color)', borderRadius: '20px', padding: '20px', marginBottom: '2rem' }}>
                                 <pre style={{ margin: 0 }}>
-                                    <code style={{ fontFamily: "'JetBrains Mono', monospace", color: '#ef4444', fontSize: '0.85rem' }}>{`{
-  "success": false,
-  "error": {
-    "code": "UPLOAD_FAILED",
-    "message": "The file provided is too large or not a valid image."
-  }
-}`}</code>
+                                    <code style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--code-text-color)', fontSize: '0.85rem' }}>{`{
+   "success": false,
+   "error": {
+     "code": "UPLOAD_FAILED",
+     "message": "The file provided is too large or not a valid image."
+   }
+ }`}</code>
                                 </pre>
                             </div>
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
-                                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <th style={{ textAlign: 'left', padding: '12px', color: '#71717a', fontSize: '0.9rem' }}>Code</th>
-                                        <th style={{ textAlign: 'left', padding: '12px', color: '#71717a', fontSize: '0.9rem' }}>Meaning</th>
+                                    <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
+                                        <th style={{ textAlign: 'left', padding: '12px', color: 'var(--text-muted)', fontSize: '0.9rem' }}>Code</th>
+                                        <th style={{ textAlign: 'left', padding: '12px', color: 'var(--text-muted)', fontSize: '0.9rem' }}>Meaning</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <td style={{ padding: '12px', color: 'white', fontFamily: 'monospace' }}>400</td>
-                                        <td style={{ padding: '12px', color: '#a1a1aa' }}>Bad Request (Missing parameters)</td>
+                                    <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
+                                        <td style={{ padding: '12px', color: 'var(--text-main)', fontFamily: 'monospace' }}>400</td>
+                                        <td style={{ padding: '12px', color: 'var(--text-muted)' }}>Bad Request (Missing parameters)</td>
                                     </tr>
-                                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <td style={{ padding: '12px', color: 'white', fontFamily: 'monospace' }}>404</td>
-                                        <td style={{ padding: '12px', color: '#a1a1aa' }}>Not Found (Invalid image ID)</td>
+                                    <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
+                                        <td style={{ padding: '12px', color: 'var(--text-main)', fontFamily: 'monospace' }}>404</td>
+                                        <td style={{ padding: '12px', color: 'var(--text-muted)' }}>Not Found (Invalid image ID)</td>
                                     </tr>
-                                    <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <td style={{ padding: '12px', color: 'white', fontFamily: 'monospace' }}>500</td>
-                                        <td style={{ padding: '12px', color: '#a1a1aa' }}>Internal Server Error</td>
+                                    <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
+                                        <td style={{ padding: '12px', color: 'var(--text-main)', fontFamily: 'monospace' }}>500</td>
+                                        <td style={{ padding: '12px', color: 'var(--text-muted)' }}>Internal Server Error</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -399,15 +441,18 @@ func main() {
 
                     {activeSection === 'sdk' && (
                         <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-                            <h2 style={{ fontSize: '1.8rem', color: 'white', marginBottom: '1.5rem' }}>Official SDKs</h2>
-                            <p style={{ color: '#a1a1aa', lineHeight: '1.7', marginBottom: '2rem' }}>
+                            <h2 style={{ fontSize: '1.8rem', color: 'var(--text-main)', marginBottom: '1.5rem' }}>Official SDKs</h2>
+                            <p style={{ color: 'var(--text-muted)', lineHeight: '1.7', marginBottom: '2rem' }}>
                                 We are developing official libraries to help you integrate PixEdge into your projects even faster. Coming soon to all major package managers.
                             </p>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
                                 {['Node.js', 'Python', 'Go', 'PHP'].map(sdk => (
-                                    <div key={sdk} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', padding: '1.5rem', textAlign: 'center' }}>
-                                        <h4 style={{ color: 'white', marginBottom: '8px' }}>PixEdge {sdk}</h4>
-                                        <span style={{ fontSize: '0.7rem', color: '#8b5cf6', fontWeight: 'bold', textTransform: 'uppercase' }}>Under Development</span>
+                                    <div key={sdk} style={{ background: 'var(--panel-bg)', border: '1px solid var(--border-color)', borderRadius: '16px', padding: '1.5rem', textAlign: 'center' }}>
+                                        <div style={{ background: 'rgba(139, 92, 246, 0.1)', width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', color: '#8b5cf6' }}>
+                                            <Box size={24} />
+                                        </div>
+                                        <h4 style={{ color: 'var(--text-main)', marginBottom: '4px' }}>{sdk}</h4>
+                                        <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Coming Soon</p>
                                     </div>
                                 ))}
                             </div>
@@ -422,8 +467,10 @@ func main() {
                 body {
                     margin: 0;
                     padding: 0;
-                    background: #050505;
+                    background: var(--bg-color);
+                    color: var(--text-main);
                     overflow-x: hidden;
+                    transition: background 0.3s ease, color 0.3s ease;
                 }
 
                 .mobile-header {
@@ -433,9 +480,9 @@ func main() {
                     left: 0;
                     right: 0;
                     height: 60px;
-                    background: rgba(5, 5, 5, 0.8);
+                    background: var(--panel-bg);
                     backdrop-filter: blur(20px);
-                    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                    border-bottom: 1px solid var(--border-color);
                     padding: 0 1.5rem;
                     align-items: center;
                     justify-content: space-between;
@@ -445,7 +492,7 @@ func main() {
                 .menu-toggle {
                     background: transparent;
                     border: none;
-                    color: white;
+                    color: var(--text-main);
                     cursor: pointer;
                     display: flex;
                     align-items: center;
@@ -453,14 +500,14 @@ func main() {
 
                 .sidebar {
                     width: 280px;
-                    border-right: 1px solid rgba(255, 255, 255, 0.05);
+                    border-right: 1px solid var(--border-color);
                     padding: 2rem 1.5rem;
                     display: flex;
                     flex-direction: column;
                     gap: 2rem;
                     position: fixed;
                     height: 100vh;
-                    background: #050505;
+                    background: var(--bg-color);
                     transition: transform 0.3s ease;
                     z-index: 999;
                 }
@@ -470,7 +517,7 @@ func main() {
                     align-items: center;
                     gap: 10px;
                     text-decoration: none;
-                    color: white;
+                    color: var(--text-main);
                 }
 
                 .content-wrapper {
@@ -542,11 +589,12 @@ func main() {
                     background: transparent;
                 }
                 ::-webkit-scrollbar-thumb {
-                    background: rgba(255,255,255,0.05);
+                    background: var(--border-color);
                     border-radius: 10px;
                 }
                 ::-webkit-scrollbar-thumb:hover {
-                    background: rgba(255,255,255,0.1);
+                    background: var(--text-muted);
+                    opacity: 0.3;
                 }
             `}</style>
         </main>

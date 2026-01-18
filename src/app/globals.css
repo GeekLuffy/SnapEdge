@@ -9,6 +9,35 @@
   --panel-bg: rgba(255, 255, 255, 0.03);
   --border-color: rgba(255, 255, 255, 0.08);
   --glow-color: rgba(139, 92, 246, 0.15);
+  --mesh-opacity: 0.15;
+  --footer-text: #444;
+  --input-bg: rgba(0, 0, 0, 0.3);
+  --card-subtext: rgba(255, 255, 255, 0.4);
+  --history-item-bg: rgba(255, 255, 255, 0.02);
+  --toast-bg: rgba(20, 20, 20, 0.8);
+  --panel-header-bg: rgba(255, 255, 255, 0.03);
+  --code-text-color: #d1d1d6;
+  --code-bg: #0a0a0a;
+  --card-shadow: rgba(0, 0, 0, 0.5);
+}
+
+[data-theme='light'] {
+  --bg-color: #f8fafc;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --panel-bg: rgba(255, 255, 255, 0.8);
+  --border-color: rgba(0, 0, 0, 0.08);
+  --glow-color: rgba(139, 92, 246, 0.05);
+  --mesh-opacity: 0.05;
+  --footer-text: #94a3b8;
+  --input-bg: rgba(0, 0, 0, 0.05);
+  --card-subtext: #64748b;
+  --history-item-bg: rgba(0, 0, 0, 0.02);
+  --toast-bg: rgba(255, 255, 255, 0.9);
+  --panel-header-bg: rgba(0, 0, 0, 0.02);
+  --code-text-color: #334155;
+  --code-bg: #f1f5f9;
+  --card-shadow: rgba(0, 0, 0, 0.05);
 }
 
 * {
@@ -22,6 +51,7 @@ body {
   color: var(--text-main);
   font-family: 'Outfit', sans-serif;
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
   min-height: 100vh;
 }
 
@@ -34,10 +64,11 @@ body::before {
   width: 120%;
   height: 120%;
   background:
-    radial-gradient(circle at 20% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
-    radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.1) 0%, transparent 40%);
+    radial-gradient(circle at 20% 20%, rgba(139, 92, 246, var(--mesh-opacity)) 0%, transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(6, 182, 212, calc(var(--mesh-opacity) * 0.7)) 0%, transparent 40%);
   z-index: -1;
   pointer-events: none;
+  transition: opacity 0.3s ease;
 }
 
 .main-container {
@@ -61,7 +92,7 @@ body::before {
   letter-spacing: -0.05em;
   line-height: 1;
   margin-bottom: 1.5rem;
-  background: linear-gradient(to bottom right, #fff 30%, #a1a1aa);
+  background: linear-gradient(to bottom right, var(--text-main) 30%, var(--text-muted));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -82,7 +113,7 @@ body::before {
   border: 1px solid var(--border-color);
   border-radius: 32px;
   padding: 2rem;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 25px 50px -12px var(--card-shadow);
   transition: transform 0.3s ease;
 }
 
@@ -95,7 +126,7 @@ body::before {
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.01);
+  background: var(--input-bg);
 }
 
 .drop-zone:hover,
@@ -213,7 +244,7 @@ body::before {
 .footer {
   margin-top: auto;
   padding: 4rem 0 2rem;
-  color: #444;
+  color: var(--footer-text);
   font-size: 0.9rem;
   display: flex;
   flex-direction: column;
