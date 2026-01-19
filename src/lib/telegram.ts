@@ -2,6 +2,38 @@ export interface TelegramFileResult {
   file_id: string;
   file_unique_id: string;
   file_path?: string;
+  file_size?: number;
+}
+
+export interface TelegramUpdate {
+  update_id: number;
+  message?: {
+    message_id: number;
+    from: {
+      id: number;
+      first_name: string;
+      username?: string;
+    };
+    chat: {
+      id: number;
+      type: string;
+    };
+    text?: string;
+    photo?: Array<{
+      file_id: string;
+      file_unique_id: string;
+      file_size: number;
+      width: number;
+      height: number;
+    }>;
+    document?: {
+      file_id: string;
+      file_unique_id: string;
+      file_name?: string;
+      mime_type?: string;
+      file_size: number;
+    };
+  };
 }
 
 export async function uploadToTelegram(file: Blob, fileName: string): Promise<TelegramFileResult> {
@@ -53,4 +85,20 @@ export async function getTelegramFileUrl(fileId: string): Promise<string> {
 
   const filePath = data.result.file_path;
   return `https://api.telegram.org/file/bot${token}/${filePath}`;
+}
+
+export async function sendMessage(chatId: number | string, text: string, parseMode: 'HTML' | 'Markdown' = 'HTML'): Promise<void> {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  if (!token) return;
+
+  await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text,
+      parse_mode: parseMode,
+      disable_web_page_preview: false
+    }),
+  });
 }

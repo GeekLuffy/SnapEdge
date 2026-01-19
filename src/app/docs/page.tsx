@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     Code2, Terminal, Cpu, ArrowLeft, Copy, Check,
     Book, Zap, Shield, Globe, Layers, Server,
-    Menu, X, Activity, AlertCircle, Box,
+    Menu, X, Activity, AlertCircle, Box, MessageSquare,
     Sun, Moon
 } from 'lucide-react';
 import Link from 'next/link';
@@ -165,6 +165,7 @@ func main() {
                     <p style={{ fontSize: '0.7rem', fontWeight: 'bold', color: 'var(--text-muted)', opacity: 0.6, marginLeft: '12px', marginBottom: '8px', marginTop: '1.5rem', textTransform: 'uppercase' }}>Reference</p>
                     <SidebarItem id="rate-limiting" label="Rate Limiting" icon={Activity} />
                     <SidebarItem id="errors" label="Error Codes" icon={AlertCircle} />
+                    <SidebarItem id="telegram-bot" label="Telegram Bot" icon={MessageSquare} />
                     <SidebarItem id="sdk" label="SDKs" icon={Box} />
                     <div style={{ marginTop: 'auto', paddingTop: '2rem', display: 'flex', justifyContent: 'center' }}>
                         <button
@@ -439,6 +440,38 @@ func main() {
                         </motion.section>
                     )}
 
+                    {activeSection === 'telegram-bot' && (
+                        <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+                            <h2 style={{ fontSize: '1.8rem', color: 'var(--text-main)', marginBottom: '1.5rem' }}>Telegram Bot Integration</h2>
+                            <p style={{ color: 'var(--text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
+                                PixEdge comes with a built-in Telegram Bot that allows you to upload images directly from your chat. No API calls or dashboard visits required.
+                            </p>
+
+                            <div style={{ background: 'var(--code-bg)', border: '1px solid var(--border-color)', borderRadius: '20px', padding: '20px', marginBottom: '2rem' }}>
+                                <h4 style={{ color: 'var(--text-main)', marginBottom: '12px' }}>Available Commands</h4>
+                                <ul style={{ color: 'var(--text-muted)', listStyle: 'none', padding: 0 }}>
+                                    <li style={{ marginBottom: '8px' }}><code style={{ color: 'var(--accent-primary)' }}>/start</code> - Initialize the bot</li>
+                                    <li style={{ marginBottom: '8px' }}><code style={{ color: 'var(--accent-primary)' }}>/upload</code> - View upload instructions</li>
+                                    <li style={{ marginBottom: '8px' }}><code style={{ color: 'var(--accent-primary)' }}>/tgm</code> - Rapid upload mode</li>
+                                </ul>
+                            </div>
+
+                            <h4 style={{ color: 'var(--text-main)', marginBottom: '1rem' }}>Webhook Setup</h4>
+                            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1rem' }}>
+                                To enable the bot, you must point your Telegram Bot token to the following webhook endpoint:
+                            </p>
+                            <div style={{ background: 'var(--code-bg)', border: '1px solid var(--border-color)', borderRadius: '12px', padding: '12px', fontFamily: 'monospace', fontSize: '0.85rem', color: 'var(--accent-primary)', marginBottom: '2rem' }}>
+                                https://your-domain.com/api/webhook/telegram
+                            </div>
+
+                            <div style={{ background: 'rgba(59, 130, 246, 0.05)', border: '1px solid rgba(59, 130, 246, 0.2)', borderRadius: '16px', padding: '1.5rem', display: 'flex', gap: '1rem' }}>
+                                <Zap color="#3b82f6" />
+                                <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>
+                                    <b>Note:</b> The bot handles both high-resolution Photos and Documents (when sent as images).
+                                </p>
+                            </div>
+                        </motion.section>
+                    )}
                     {activeSection === 'sdk' && (
                         <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                             <h2 style={{ fontSize: '1.8rem', color: 'var(--text-main)', marginBottom: '1.5rem' }}>Official SDKs</h2>
