@@ -33,10 +33,27 @@ export interface TelegramUpdate {
       mime_type?: string;
       file_size: number;
     };
+    reply_to_message?: {
+      message_id: number;
+      photo?: Array<{
+        file_id: string;
+        file_unique_id: string;
+        file_size: number;
+        width: number;
+        height: number;
+      }>;
+      document?: {
+        file_id: string;
+        file_unique_id: string;
+        file_name?: string;
+        mime_type?: string;
+        file_size: number;
+      };
+    };
   };
 }
 
-export async function uploadToTelegram(file: Blob, fileName: string): Promise<TelegramFileResult> {
+export async function uploadToTelegram(file: Blob, fileName: string, caption?: string): Promise<TelegramFileResult> {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
 
@@ -47,6 +64,10 @@ export async function uploadToTelegram(file: Blob, fileName: string): Promise<Te
   const formData = new FormData();
   formData.append('chat_id', chatId);
   formData.append('photo', file, fileName);
+  if (caption) {
+    formData.append('caption', caption);
+    formData.append('parse_mode', 'HTML');
+  }
 
   const response = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
     method: 'POST',
@@ -99,6 +120,23 @@ export async function sendMessage(chatId: number | string, text: string, parseMo
       text,
       parse_mode: parseMode,
       disable_web_page_preview: false
+    }),
+  });
+}
+
+export async function sendPhotoToChannel(fileId: string, caption: string): Promise<void> {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+  if (!token || !chatId) return;
+
+  await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      chat_id: chatId,
+      photo: fileId,
+      caption,
+      parse_mode: 'HTML'
     }),
   });
 }

@@ -102,6 +102,31 @@ UPSTASH_REDIS_REST_TOKEN=your_token
 NEXT_PUBLIC_BASE_URL=https://your-deployment.com
 ```
 
+### 3. One-Click Deploy
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fgeekluffy%2FPixEdge&env=TELEGRAM_BOT_TOKEN,TELEGRAM_CHAT_ID,UPSTASH_REDIS_REST_URL,UPSTASH_REDIS_REST_TOKEN,NEXT_PUBLIC_BASE_URL)
+
+---
+
+## 🤖 Telegram Bot Integration
+
+PixEdge includes a built-in Telegram Bot for direct uploads from your messaging app.
+
+### Setting up the Webhook
+Once you deploy PixEdge to Vercel (or any public URL), you must link your bot to the webhook endpoint. Visit the following URL in your browser:
+
+`https://api.telegram.org/bot<YOUR_BOT_TOKEN>/setWebhook?url=https://your-domain.com/api/webhook/telegram`
+
+### Bot Commands
+- `/start` : Show the welcome message.
+- `/upload` or `/tgm` : Upload an image.
+- `/help` : Shows the instructions.
+
+
+### Features
+- **Direct Upload**: Send any Photo or File (as image) to the bot for an instant link.
+- **Reply to Upload**: Reply to any existing image in a chat with `/upload` or `/tgm` to host it on PixEdge.
+- **DB Tracking**: Every upload is forwarded to your storage channel with a caption identifying the user (Name + ID or @Username).
+
 ---
 
 ## 📖 Project Structure & Architecture
@@ -117,10 +142,22 @@ graph LR
 
 ---
 
-## 🏷️ Keywords & Tags
 `telegram-storage` `image-hosting` `cdn` `edge-computing` `telegraph` `upstash` `nextjs` `redis-database` `open-source` `serverless` `fast-upload` `decentralized-storage` `developer-api`
+
+---
+
+## 🌐 Community & Support
+
+Stay updated with the latest features and get support for PixEdge:
+
+- 📢 **Updates**: [@EdgeBots](https://t.me/EdgeBots)
+- 💬 **Support Group**: [@EdgeBotSupport](https://t.me/EdgeBotSupport)
 
 ---
 
 ## 📜 License
 Distributed under the **MIT License**. Feel free to use, modify, and distribute as you wish!
+
+---
+
+**Made with ❤️ by [Geekluffy](https://github.com/geekluffy)**
