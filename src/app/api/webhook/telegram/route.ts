@@ -34,8 +34,7 @@ export async function POST(req: NextRequest) {
                     `• Send an image as a <b>Document</b>.\n` +
                     `• Or <b>Reply</b> to an existing image with /upload or /tgm.\n\n` +
                     `<b>Commands:</b>\n` +
-                    `/upload - Upload a replied image\n` +
-                    `/tgm - Rapid upload mode\n` +
+                    `/upload or /tgm - Upload a replied image\n` +
                     `/help - Show this message`
                 );
                 return new NextResponse('OK');
