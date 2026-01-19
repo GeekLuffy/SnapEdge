@@ -1,5 +1,5 @@
 ---
-description: How to setup and run SnapEdge
+description: How to setup and run Pixedge
 ---
 
 1. Create a `.env.local` file in the root directory and add your Telegram bot token and chat ID.

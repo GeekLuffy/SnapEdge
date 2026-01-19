@@ -76,19 +76,28 @@ export async function POST(req: NextRequest) {
 
 
         // Handle Photo
+        // Handle Photo
         if (photo && photo.length > 0) {
-            const largestPhoto = photo[photo.length - 1];
-            await processFile(chatId, largestPhoto.file_id, largestPhoto.file_size, 'image/jpeg', userLink);
+            // In groups, only process if it's not a direct message (unless bot privacy is off, but we want to ignore spam)
+            // Actually, per user request: "in group it should only upload when replied a photo with command"
+            // So we should IGNORE all direct photos in groups.
+            if (body.message.chat.type === 'private') {
+                const largestPhoto = photo[photo.length - 1];
+                await processFile(chatId, largestPhoto.file_id, largestPhoto.file_size, 'image/jpeg', userLink);
+            }
             return new NextResponse('OK');
         }
 
         // Handle Document (only if it's an image)
         if (document) {
-            const mimeType = document.mime_type || '';
-            if (mimeType.startsWith('image/')) {
-                await processFile(chatId, document.file_id, document.file_size, mimeType, userLink);
-            } else if (body.message.chat.type === 'private') {
-                await sendMessage(chatId, "❌ Please send only image files.");
+            // Only process direct documents in PRIVATE chats
+            if (body.message.chat.type === 'private') {
+                const mimeType = document.mime_type || '';
+                if (mimeType.startsWith('image/')) {
+                    await processFile(chatId, document.file_id, document.file_size, mimeType, userLink);
+                } else {
+                    await sendMessage(chatId, "❌ Please send only image files.");
+                }
             }
             return new NextResponse('OK');
         }

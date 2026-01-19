@@ -237,7 +237,7 @@ func main() {
                         <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                             <h2 style={{ fontSize: '1.8rem', color: 'var(--text-main)', marginBottom: '1.5rem' }}>Authentication</h2>
                             <p style={{ color: 'var(--text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
-                                Currently, the SnapEdge Public API is **open access**. No API keys are required to upload or retrieve image metadata.
+                                Currently, the PixEdge Public API is **open access**. No API keys are required to upload or retrieve image metadata.
                                 However, to prevent abuse, we implement global rate limiting based on IP addresses.
                             </p>
                             <div style={{
@@ -264,7 +264,7 @@ func main() {
                             </div>
 
                             <p style={{ color: 'var(--text-muted)', lineHeight: '1.7', marginBottom: '2rem' }}>
-                                Retrieve real-time statistics and deep metadata for any image hosted on SnapEdge.
+                                Retrieve real-time statistics and deep metadata for any image hosted on PixEdge.
                             </p>
 
                             <div style={{ background: 'var(--code-bg)', border: '1px solid var(--border-color)', borderRadius: '20px', padding: '20px' }}>

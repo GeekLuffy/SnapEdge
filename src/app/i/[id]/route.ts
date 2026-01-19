@@ -47,8 +47,8 @@ export async function GET(
             <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>SnapEdge | ${id}</title>
-                <meta property="og:title" content="SnapEdge Image">
+                <title>PixEdge | ${id}</title>
+                <meta property="og:title" content="PixEdge Image">
                 <meta property="og:image" content="${proxiedImgSrc}">
                 <meta name="twitter:card" content="summary_large_image">
                 <style>
@@ -108,7 +108,7 @@ export async function GET(
                     <a href="${proxiedImgSrc}" download class="primary">Download Raw</a>
                 </div>
                 <div class="container">
-                    <img src="${proxiedImgSrc}" alt="SnapEdge Image">
+                    <img src="${proxiedImgSrc}" alt="PixEdge Image">
                 </div>
                 <div class="info-bar">
                     <div class="info-item"><b>Views</b> ${views}</div>
