@@ -22,7 +22,8 @@ export async function POST(req: NextRequest) {
 
         // Handle commands
         if (text) {
-            const command = text.split(' ')[0].toLowerCase();
+            // Support commands with @BotName suffix
+            const command = text.split(' ')[0].split('@')[0].toLowerCase();
 
             if (command === '/start' || command === '/help') {
                 await sendMessage(chatId,
@@ -87,7 +88,7 @@ export async function POST(req: NextRequest) {
             const mimeType = document.mime_type || '';
             if (mimeType.startsWith('image/')) {
                 await processFile(chatId, document.file_id, document.file_size, mimeType, userLink);
-            } else {
+            } else if (body.message.chat.type === 'private') {
                 await sendMessage(chatId, "❌ Please send only image files.");
             }
             return new NextResponse('OK');
