@@ -44,7 +44,8 @@ export async function POST(req: NextRequest) {
         }
 
         // 1. Upload to Telegram
-        const telegramResult = await uploadToTelegram(file, 'upload.jpg', '📦 <b>Uploaded in web</b>');
+        const mediaType = file.type.startsWith('image/') && file.type !== 'image/gif' ? 'photo' : 'animation';
+        const telegramResult = await uploadToTelegram(file, 'upload', '📦 <b>Uploaded in web</b>', mediaType);
 
         // 2. Generate ID
         const id = customId ? customId.toLowerCase().replace(/[^a-z0-9-]/g, '-') : generateId();

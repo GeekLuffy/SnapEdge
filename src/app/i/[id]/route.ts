@@ -20,6 +20,10 @@ export async function GET(
             return new NextResponse('Image not found', { status: 404 });
         }
 
+        // Detect TelegramBot to serve raw content for better previews
+        const userAgent = req.headers.get('user-agent') || '';
+        const isTelegramBot = userAgent.toLowerCase().includes('telegrambot');
+
         const fileUrl = await getTelegramFileUrl(record.telegram_file_id);
 
         const proxyImage = async () => {
@@ -32,7 +36,7 @@ export async function GET(
         };
 
         const accept = req.headers.get('accept') || '';
-        if (hasExtension || !accept.includes('text/html')) {
+        if (hasExtension || (!accept.includes('text/html') && !isTelegramBot)) {
             return proxyImage();
         }
 
@@ -49,8 +53,17 @@ export async function GET(
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>PixEdge | ${id}</title>
-                <meta property="og:title" content="PixEdge Image">
-                <meta property="og:image" content="${proxiedImgSrc}">
+                <meta property="og:title" content="PixEdge Media">
+                <meta property="og:site_name" content="PixEdge">
+                ${record.metadata?.type?.startsWith('video/')
+                ? `<meta property="og:type" content="video.other">
+                   <meta property="og:video" content="${proxiedImgSrc}">
+                   <meta property="og:video:type" content="${record.metadata.type}">
+                   <meta property="og:video:width" content="1280">
+                   <meta property="og:video:height" content="720">`
+                : `<meta property="og:type" content="website">
+                   <meta property="og:image" content="${proxiedImgSrc}">`
+            }
                 <meta name="twitter:card" content="summary_large_image">
                 <style>
                     body { margin: 0; background: #050505; color: white; font-family: 'Inter', system-ui, -apple-system, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; }

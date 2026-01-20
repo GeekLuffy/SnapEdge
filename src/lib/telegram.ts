@@ -65,7 +65,7 @@ export interface TelegramUpdate {
   };
 }
 
-export async function uploadToTelegram(file: Blob, fileName: string, caption?: string): Promise<TelegramFileResult> {
+export async function uploadToTelegram(file: Blob, fileName: string, caption?: string, mediaType: 'photo' | 'animation' = 'photo'): Promise<TelegramFileResult> {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
 
@@ -75,13 +75,17 @@ export async function uploadToTelegram(file: Blob, fileName: string, caption?: s
 
   const formData = new FormData();
   formData.append('chat_id', chatId);
-  formData.append('photo', file, fileName);
+
+  const method = mediaType === 'animation' ? 'sendAnimation' : 'sendPhoto';
+  const fieldName = mediaType === 'animation' ? 'animation' : 'photo';
+
+  formData.append(fieldName, file, fileName);
   if (caption) {
     formData.append('caption', caption);
     formData.append('parse_mode', 'HTML');
   }
 
-  const response = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+  const response = await fetch(`https://api.telegram.org/bot${token}/${method}`, {
     method: 'POST',
     body: formData,
   });
@@ -92,13 +96,25 @@ export async function uploadToTelegram(file: Blob, fileName: string, caption?: s
     throw new Error(`Telegram API error: ${data.description}`);
   }
 
-  // Telegram returns an array of sizes, we take the largest one
-  const photos = data.result.photo;
-  const largestPhoto = photos[photos.length - 1];
+  let fileId = '';
+  let fileUniqueId = '';
+
+  if (mediaType === 'animation') {
+    // For animations, it's a single object in 'animation' or 'document' field
+    const fileInfo = data.result.animation || data.result.document;
+    fileId = fileInfo.file_id;
+    fileUniqueId = fileInfo.file_unique_id;
+  } else {
+    // For photos, it's an array of sizes
+    const photos = data.result.photo;
+    const largestPhoto = photos[photos.length - 1];
+    fileId = largestPhoto.file_id;
+    fileUniqueId = largestPhoto.file_unique_id;
+  }
 
   return {
-    file_id: largestPhoto.file_id,
-    file_unique_id: largestPhoto.file_unique_id,
+    file_id: fileId,
+    file_unique_id: fileUniqueId,
   };
 }
 
