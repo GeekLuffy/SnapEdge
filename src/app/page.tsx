@@ -383,7 +383,7 @@ export default function Home() {
 
                 {/* Telegram Bot CTA */}
                 <motion.a
-                    href="https://t.me/YourBotUser"
+                    href="https://t.me/PixEdge_Bot"
                     target="_blank"
                     rel="noopener noreferrer"
                     initial={{ opacity: 0, y: 10 }}
