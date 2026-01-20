@@ -1,11 +1,11 @@
-# ⚡ PixEdge: Ultra-Fast Edge Image Hosting
+# ⚡ PixEdge: Ultra-Fast Edge Media Hosting
 
 [![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
 [![Upstash](https://img.shields.io/badge/Upstash-00E699?style=for-the-badge&logo=upstash&logoColor=black)](https://upstash.com/)
 [![Telegram](https://img.shields.io/badge/Telegram-26A5E4?style=for-the-badge&logo=telegram&logoColor=white)](https://telegram.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-**PixEdge** is a professional-grade, open-source image hosting platform designed for speed and infinite scalability. It leverages the Telegram Bot API as a decentralized storage backend and Upstash Redis for high-performance metadata management, delivering images directly through edge redirection.
+**PixEdge** is a professional-grade, open-source image hosting platform designed for speed and infinite scalability. It leverages the Telegram Bot API as a decentralized storage backend and Upstash Redis for high-performance metadata management, delivering Media directly through edge redirection.
 
 ---
 
@@ -35,7 +35,7 @@
 
 PixEdge is built with a developer-first approach. You can programmatically upload images and retrieve metadata using our versioned REST API.
 
-### 1. Upload Image
+### 1. Upload Media
 **Endpoint:** `POST /api/v1/upload`  
 **Content-Type:** `multipart/form-data`
 
@@ -123,7 +123,7 @@ Once you deploy PixEdge to Vercel (or any public URL), you must link your bot to
 
 
 ### Features
-- **Direct Upload**: Send any Photo or File (as image) to the bot for an instant link.
+- **Direct Upload**: Send any Media or File (as image/video) to the bot for an instant link.
 - **Reply to Upload**: Reply to any existing image in a chat with `/upload` or `/tgm` to host it on PixEdge.
 - **DB Tracking**: Every upload is forwarded to your storage channel with a caption identifying the user (Name + ID or @Username).
 
