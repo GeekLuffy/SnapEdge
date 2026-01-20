@@ -240,7 +240,7 @@ export default function Home() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2, duration: 0.8 }}
                     >
-                        Images hosted,<br />at the edge.
+                        Media hosted,<br />at the edge.
                     </motion.h1>
                     <motion.p
                         initial={{ opacity: 0 }}
