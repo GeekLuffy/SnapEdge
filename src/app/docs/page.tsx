@@ -159,7 +159,7 @@ func main() {
                     <SidebarItem id="authentication" label="Authentication" icon={Shield} />
 
                     <p style={{ fontSize: '0.7rem', fontWeight: 'bold', color: 'var(--text-muted)', opacity: 0.6, marginLeft: '12px', marginBottom: '8px', marginTop: '1.5rem', textTransform: 'uppercase' }}>Endpoints</p>
-                    <SidebarItem id="upload" label="Upload Image" icon={Terminal} />
+                    <SidebarItem id="upload" label="Upload Media" icon={Terminal} />
                     <SidebarItem id="info" label="Get Metadata" icon={Cpu} />
 
                     <p style={{ fontSize: '0.7rem', fontWeight: 'bold', color: 'var(--text-muted)', opacity: 0.6, marginLeft: '12px', marginBottom: '8px', marginTop: '1.5rem', textTransform: 'uppercase' }}>Reference</p>
@@ -212,7 +212,7 @@ func main() {
                         <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                             <h2 style={{ fontSize: '1.8rem', color: 'var(--text-main)', marginBottom: '1.5rem' }}>Getting Started</h2>
                             <p style={{ color: 'var(--text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
-                                PixEdge provides a high-performance REST API for uploading and managing images via our Telegram-backed edge storage.
+                                PixEdge provides a high-performance REST API for uploading and managing images, GIFs, and videos via our Telegram-backed edge storage.
                                 Our storage is 100% free, decentralized, and infinitely scalable.
                             </p>
                             <div style={{
@@ -296,7 +296,7 @@ func main() {
                             </div>
 
                             <p style={{ color: 'var(--text-muted)', lineHeight: '1.7', marginBottom: '2rem' }}>
-                                This endpoint allows you to upload an image file. It returns a clean URL that utilizes our edge redirection proxy.
+                                This endpoint allows you to upload media files (Images, GIFs, Videos). It returns a clean URL that utilizes our edge redirection proxy.
                             </p>
 
                             <h4 style={{ marginBottom: '1rem', color: 'var(--text-muted)', fontSize: '0.8rem', textTransform: 'uppercase' }}>Request Body</h4>
@@ -312,7 +312,7 @@ func main() {
                                     <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
                                         <td style={{ padding: '12px', fontFamily: 'monospace', color: 'var(--accent-primary)' }}>file</td>
                                         <td style={{ padding: '12px', color: 'var(--text-muted)' }}>File</td>
-                                        <td style={{ padding: '12px', color: 'var(--text-muted)' }}>Multipart image file (max 20MB)</td>
+                                        <td style={{ padding: '12px', color: 'var(--text-muted)' }}>Multipart file (Image/GIF/Video, max 10MB)</td>
                                     </tr>
                                     <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
                                         <td style={{ padding: '12px', fontFamily: 'monospace', color: 'var(--accent-primary)' }}>customId</td>
