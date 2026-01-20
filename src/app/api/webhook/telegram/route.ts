@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { TelegramUpdate, sendMessage, sendPhotoToChannel } from '@/lib/telegram';
-import { saveImage, generateId } from '@/lib/db';
+import { saveImage, generateId, getStats, registerUser } from '@/lib/db';
 
 export async function POST(req: NextRequest) {
     try {
@@ -26,6 +26,10 @@ export async function POST(req: NextRequest) {
             const command = text.split(' ')[0].split('@')[0].toLowerCase();
 
             if (command === '/start' || command === '/help') {
+                if (command === '/start') {
+                    await registerUser(from.id);
+                }
+
                 await sendMessage(chatId,
                     `✨ <b>PixEdge Bot Help</b>\n\n` +
                     `I can host your images at lightning speed using our edge infrastructure.\n\n` +
@@ -34,8 +38,23 @@ export async function POST(req: NextRequest) {
                     `• Send an image as a <b>Document</b>.\n` +
                     `• Or <b>Reply</b> to an existing image with /upload or /tgm.\n\n` +
                     `<b>Commands:</b>\n` +
+                    `/stats - Show bot statistics\n` +
                     `/upload or /tgm - Upload a replied image\n` +
                     `/help - Show this message`
+                );
+                return new NextResponse('OK');
+            }
+
+            if (command === '/stats') {
+                const stats = await getStats();
+                await sendMessage(chatId,
+                    `📊 <b>PixEdge Statistics</b>\n\n` +
+                    `👥 <b>Total Users:</b> ${stats.totalUsers}\n` +
+                    `🖼️ <b>Total Images:</b> ${stats.totalUploads}\n` +
+                    `🤖 <b>Bot Uploads:</b> ${stats.botUploads}\n` +
+                    `🌐 <b>Web Uploads:</b> ${stats.webUploads}\n` +
+                    `📶 <b>Ping:</b> ${stats.ping}ms`,
+                    'HTML'
                 );
                 return new NextResponse('OK');
             }
@@ -45,11 +64,11 @@ export async function POST(req: NextRequest) {
                 if (replyTo) {
                     if (replyTo.photo && replyTo.photo.length > 0) {
                         const largestPhoto = replyTo.photo[replyTo.photo.length - 1];
-                        await processFile(chatId, largestPhoto.file_id, largestPhoto.file_size, 'image/jpeg', userLink);
+                        await processFile(chatId, largestPhoto.file_id, largestPhoto.file_size, 'image/jpeg', userLink, from.id);
                         return new NextResponse('OK');
                     }
                     if (replyTo.document && replyTo.document.mime_type?.startsWith('image/')) {
-                        await processFile(chatId, replyTo.document.file_id, replyTo.document.file_size, replyTo.document.mime_type, userLink);
+                        await processFile(chatId, replyTo.document.file_id, replyTo.document.file_size, replyTo.document.mime_type, userLink, from.id);
                         return new NextResponse('OK');
                     }
                 }
@@ -85,7 +104,7 @@ export async function POST(req: NextRequest) {
             // So we should IGNORE all direct photos in groups.
             if (body.message.chat.type === 'private') {
                 const largestPhoto = photo[photo.length - 1];
-                await processFile(chatId, largestPhoto.file_id, largestPhoto.file_size, 'image/jpeg', userLink);
+                await processFile(chatId, largestPhoto.file_id, largestPhoto.file_size, 'image/jpeg', userLink, from.id);
             }
             return new NextResponse('OK');
         }
@@ -96,7 +115,7 @@ export async function POST(req: NextRequest) {
             if (body.message.chat.type === 'private') {
                 const mimeType = document.mime_type || '';
                 if (mimeType.startsWith('image/')) {
-                    await processFile(chatId, document.file_id, document.file_size, mimeType, userLink);
+                    await processFile(chatId, document.file_id, document.file_size, mimeType, userLink, from.id);
                 } else {
                     await sendMessage(chatId, "❌ Please send only image files.");
                 }
@@ -111,7 +130,7 @@ export async function POST(req: NextRequest) {
     }
 }
 
-async function processFile(chatId: number, fileId: string, fileSize: number, mimeType: string, userLink: string) {
+async function processFile(chatId: number, fileId: string, fileSize: number, mimeType: string, userLink: string, userId: number | string) {
     try {
         const id = generateId();
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://pixedge.vercel.app';
@@ -128,7 +147,7 @@ async function processFile(chatId: number, fileId: string, fileSize: number, mim
                 size: fileSize,
                 type: mimeType
             }
-        });
+        }, 'bot', userId);
 
         const publicUrl = `${baseUrl}/i/${id}`;
 

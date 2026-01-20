@@ -33,14 +33,30 @@ async function ensureLocalDb() {
     }
 }
 
-export async function saveImage(record: any) {
+export async function saveImage(record: any, source: 'web' | 'bot' = 'web', userId?: string | number) {
     if (useCloud() && redis) {
         // Use HSET to store as a single Hash object in Redis
-        await redis.hset(`snap:${record.id}`, {
+        const pipeline = redis.pipeline();
+        pipeline.hset(`snap:${record.id}`, {
             ...record,
             views: 0,
             metadata: JSON.stringify(record.metadata)
         });
+
+        // 1. Total Uploads
+        pipeline.incr('stats:total_uploads');
+
+        // 2. Source specific stats
+        if (source === 'web') {
+            pipeline.incr('stats:web_uploads');
+        } else if (source === 'bot') {
+            pipeline.incr('stats:bot_uploads');
+            if (userId) {
+                // 3. Unique Users (only for bot users usually)
+                pipeline.sadd('stats:users', userId);
+            }
+        }
+        await pipeline.exec();
         return;
     }
 
@@ -48,7 +64,36 @@ export async function saveImage(record: any) {
     const content = await fs.readFile(DB_PATH, 'utf-8');
     const db = JSON.parse(content);
     db.images.push({ ...record, views: 0 });
+    // Local DB stats not really needed as this is mostly for the bot which runs with Redis
     await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2));
+}
+
+export async function getStats() {
+    if (useCloud() && redis) {
+        const start = Date.now();
+        const [totalUploads, totalUsers, webUploads, botUploads] = await Promise.all([
+            redis.get('stats:total_uploads'),
+            redis.scard('stats:users'),
+            redis.get('stats:web_uploads'),
+            redis.get('stats:bot_uploads')
+        ]);
+        const ping = Date.now() - start;
+
+        return {
+            totalUploads: parseInt(totalUploads as string || '0'),
+            totalUsers: totalUsers || 0,
+            webUploads: parseInt(webUploads as string || '0'),
+            botUploads: parseInt(botUploads as string || '0'),
+            ping
+        };
+    }
+    return {
+        totalUploads: 0,
+        totalUsers: 0,
+        webUploads: 0,
+        botUploads: 0,
+        ping: 0
+    };
 }
 
 export async function getImage(id: string): Promise<ImageRecord | null> {
@@ -104,4 +149,10 @@ export async function rateLimit(key: string, limit: number, windowSeconds: numbe
 
 export function generateId() {
     return Math.random().toString(36).substring(2, 10);
+}
+
+export async function registerUser(userId: string | number) {
+    if (useCloud() && redis) {
+        await redis.sadd('stats:users', userId);
+    }
 }
