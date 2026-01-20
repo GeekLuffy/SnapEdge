@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { TelegramUpdate, sendMessage, sendMediaToChannel } from '@/lib/telegram';
+import { TelegramUpdate, sendMessage, sendMediaToChannel, sendLog } from '@/lib/telegram';
 import { saveImage, generateId, getStats, registerUser } from '@/lib/db';
 
 export async function POST(req: NextRequest) {
@@ -27,6 +27,7 @@ export async function POST(req: NextRequest) {
             if (command === '/start' || command === '/help') {
                 if (command === '/start') {
                     await registerUser(from.id);
+                    await sendLog(`👤 <b>New User Started Bot</b>\n\nUser: ${userLink}\nID: ${from.id}`);
                 }
 
                 await sendMessage(chatId,
@@ -142,11 +143,12 @@ export async function POST(req: NextRequest) {
         return new NextResponse('OK');
     } catch (error) {
         console.error('Webhook error:', error);
+        await sendLog(`⚠️ <b>Webhook Error</b>\n\nError: ${error}`);
         return new NextResponse('OK'); // Always return OK to Telegram
     }
 }
 
-async function processFile(chatId: number, fileId: string, fileSize: number, mimeType: string, userLink: string, userId: number | string, mediaType: 'photo' | 'animation') {
+async function processFile(chatId: number, fileId: string, fileSize: number, mimeType: string, userLink: string, userId: number | string, mediaType: 'photo' | 'animation' | 'video') {
     try {
         // Enforce 10MB limit
         const MAX_SIZE = 10 * 1024 * 1024;
@@ -180,8 +182,11 @@ async function processFile(chatId: number, fileId: string, fileSize: number, mim
             `⚡ <i>Hosted on PixEdge</i>`,
             'HTML'
         );
+
+        await sendLog(`📤 <b>New Bot Upload</b>\n\nUser: ${userLink}\nType: ${mimeType}\nSize: ${(fileSize / 1024 / 1024).toFixed(2)} MB\nLink: ${publicUrl}`);
     } catch (error) {
         console.error('Processing error:', error);
+        await sendLog(`❌ <b>Upload Processing Error</b>\n\nUser: ${userLink}\nError: ${error}`);
         await sendMessage(chatId, "❌ Failed to process your image. Please try again later.");
     }
 }

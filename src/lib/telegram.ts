@@ -193,3 +193,10 @@ export async function sendMediaToChannel(fileId: string, caption: string, mediaT
     body: JSON.stringify(body),
   });
 }
+
+export async function sendLog(text: string): Promise<void> {
+  const logChannelId = process.env.TELEGRAM_LOG_CHANNEL_ID;
+  if (!logChannelId) return;
+
+  await sendMessage(logChannelId, text, 'HTML');
+}

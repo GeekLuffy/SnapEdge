@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { uploadToTelegram } from '@/lib/telegram';
+import { uploadToTelegram, sendLog } from '@/lib/telegram';
 import { saveImage, generateId, rateLimit } from '@/lib/db';
 
 export async function POST(req: NextRequest) {
@@ -70,6 +70,11 @@ export async function POST(req: NextRequest) {
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ||
             (req.headers.get('host') ? `http://${req.headers.get('host')}` : '');
 
+        const publicUrl = `${baseUrl}/i/${id}`;
+
+        // Log to Telegram
+        await sendLog(`🌐 <b>New Web Upload</b>\n\nType: ${file.type}\nSize: ${(file.size / 1024 / 1024).toFixed(2)} MB\nLink: ${publicUrl}`);
+
         return NextResponse.json({
             success: true,
             data: {
@@ -82,6 +87,7 @@ export async function POST(req: NextRequest) {
 
     } catch (error: any) {
         console.error('Upload API Error:', error);
+        await sendLog(`❌ <b>Web Upload Error</b>\n\nError: ${error.message || error}`);
         return NextResponse.json({
             success: false,
             error: { code: 'INTERNAL_ERROR', message: error.message || 'Server processed request failed' }
