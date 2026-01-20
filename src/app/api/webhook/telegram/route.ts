@@ -31,14 +31,14 @@ export async function POST(req: NextRequest) {
 
                 await sendMessage(chatId,
                     `✨ <b>PixEdge Bot Help</b>\n\n` +
-                    `I can host your images at lightning speed using our edge infrastructure.\n\n` +
+                    `I can host your media at lightning speed using our edge infrastructure.\n\n` +
                     `🚀 <b>How to Upload:</b>\n` +
-                    `• Send a <b>Photo</b> directly to me.\n` +
-                    `• Send an image as a <b>Document</b>.\n` +
-                    `• Or <b>Reply</b> to an existing image with /upload or /tgm.\n\n` +
+                    `• Send a <b>Photo/Video/GIF</b> directly to me.\n` +
+                    `• Send an <b>Image/Video/GIF</b> as a <b>Document</b>.\n` +
+                    `• Or <b>Reply</b> to an existing Media with /upload or /tgm.\n\n` +
                     `<b>Commands:</b>\n` +
                     `/stats - Show bot statistics\n` +
-                    `/upload or /tgm - Upload a replied image\n` +
+                    `/upload or /tgm - Upload a replied Media\n` +
                     `/help - Show this message`,
                     'HTML',
                     {
@@ -99,7 +99,7 @@ export async function POST(req: NextRequest) {
             if (body.message.chat.type === 'private') {
                 await sendMessage(chatId,
                     `❓ <b>I'm not sure what you mean.</b>\n\n` +
-                    `Just send me any <b>Photo</b> or <b>Image File</b> and I will host it for you instantly! Or type /help for commands.`,
+                    `Just send me any <b>Photo</b> or <b>Video/GIF</b> and I will host it for you instantly! Or type /help for commands.`,
                     'HTML'
                 );
             }
