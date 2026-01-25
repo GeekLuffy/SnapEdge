@@ -6,7 +6,7 @@ import {
     Upload, Copy, Check, Shield, Zap,
     Globe, History, QrCode, Settings,
     Code2, ArrowRight, ExternalLink, Image as ImageIcon,
-    Sun, Moon, MessageSquare
+    Sun, Moon, MessageSquare, LayoutDashboard
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
@@ -187,6 +187,19 @@ export default function Home() {
                     transition: 'color 0.2s'
                 }}>
                     <Code2 size={18} /> API Docs
+                </Link>
+
+                <Link href="/dashboard" style={{
+                    color: 'var(--text-muted)',
+                    textDecoration: 'none',
+                    fontSize: '1rem',
+                    fontWeight: '600',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    transition: 'color 0.2s'
+                }}>
+                    <LayoutDashboard size={18} /> Dashboard
                 </Link>
 
                 <button
