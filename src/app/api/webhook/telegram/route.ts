@@ -150,10 +150,10 @@ export async function POST(req: NextRequest) {
 
 async function processFile(chatId: number, fileId: string, fileSize: number, mimeType: string, userLink: string, userId: number | string, mediaType: 'photo' | 'animation' | 'video') {
     try {
-        // Enforce 10MB limit
-        const MAX_SIZE = 10 * 1024 * 1024;
+        // Enforce 2GB limit
+        const MAX_SIZE = 2 * 1024 * 1024 * 1024; // 2GB
         if (fileSize > MAX_SIZE) {
-            await sendMessage(chatId, "❌ File too large. Max size is 10MB.");
+            await sendMessage(chatId, "❌ File too large. Max size is 2GB.");
             return;
         }
 

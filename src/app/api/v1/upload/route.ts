@@ -34,12 +34,12 @@ export async function POST(req: NextRequest) {
             }, { status: 400 });
         }
 
-        // Enforce 10MB limit
-        const MAX_SIZE = 10 * 1024 * 1024;
+        // Enforce 2GB limit
+        const MAX_SIZE = 2 * 1024 * 1024 * 1024; // 2GB
         if (file.size > MAX_SIZE) {
             return NextResponse.json({
                 success: false,
-                error: { code: 'FILE_TOO_LARGE', message: 'File too large. Max size is 10MB.' }
+                error: { code: 'FILE_TOO_LARGE', message: 'File too large. Max size is 2GB.' }
             }, { status: 400 });
         }
 

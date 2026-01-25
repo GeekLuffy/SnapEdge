@@ -88,9 +88,9 @@ export default function Home() {
             return;
         }
 
-        // 10MB Limit Check
-        if (file.size > 10 * 1024 * 1024) {
-            alert('File too large. Max size is 10MB.');
+        // 2GB Limit Check
+        if (file.size > 2 * 1024 * 1024 * 1024) {
+            alert('File too large. Max size is 2GB.');
             return;
         }
 

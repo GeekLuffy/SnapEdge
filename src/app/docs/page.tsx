@@ -345,7 +345,7 @@ func main() {
                                     <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
                                         <td style={{ padding: '12px', fontFamily: 'monospace', color: 'var(--accent-primary)' }}>file</td>
                                         <td style={{ padding: '12px', color: 'var(--text-muted)' }}>File</td>
-                                        <td style={{ padding: '12px', color: 'var(--text-muted)' }}>Multipart file (Image/GIF/Video, max 10MB)</td>
+                                        <td style={{ padding: '12px', color: 'var(--text-muted)' }}>Multipart file (Image/GIF/Video, max 2GB)</td>
                                     </tr>
                                     <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
                                         <td style={{ padding: '12px', fontFamily: 'monospace', color: 'var(--accent-primary)' }}>customId</td>
