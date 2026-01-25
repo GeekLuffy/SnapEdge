@@ -216,7 +216,12 @@ export async function createUser(email: string, passwordHash: string): Promise<U
     };
 
     if (useCloud() && redis) {
-        await redis.hset(`user:${userId}`, user);
+        await redis.hset(`user:${userId}`, {
+            id: user.id,
+            email: user.email,
+            password_hash: user.password_hash,
+            created_at: user.created_at.toString()
+        });
         await redis.set(`user:email:${user.email}`, userId);
     } else {
         await ensureLocalDb();
@@ -278,7 +283,7 @@ export async function getUserById(userId: string): Promise<User | null> {
 
 export async function updateUserLastLogin(userId: string) {
     if (useCloud() && redis) {
-        await redis.hset(`user:${userId}`, { last_login: Date.now() });
+        await redis.hset(`user:${userId}`, { last_login: Date.now().toString() });
     } else {
         await ensureLocalDb();
         const content = await fs.readFile(DB_PATH, 'utf-8');
@@ -308,7 +313,16 @@ export async function createApiKey(userId: string, name: string, keyHash: string
     };
 
     if (useCloud() && redis) {
-        await redis.hset(`apikey:${apiKeyId}`, apiKey);
+        await redis.hset(`apikey:${apiKeyId}`, {
+            id: apiKey.id,
+            user_id: apiKey.user_id,
+            key_hash: apiKey.key_hash,
+            name: apiKey.name,
+            prefix: apiKey.prefix,
+            rate_limit: apiKey.rate_limit.toString(),
+            created_at: apiKey.created_at.toString(),
+            is_active: apiKey.is_active.toString()
+        });
         await redis.sadd(`user:${userId}:keys`, apiKeyId);
     } else {
         await ensureLocalDb();
@@ -395,7 +409,7 @@ export async function getUserApiKeys(userId: string): Promise<ApiKey[]> {
 
 export async function updateApiKeyLastUsed(apiKeyId: string) {
     if (useCloud() && redis) {
-        await redis.hset(`apikey:${apiKeyId}`, { last_used: Date.now() });
+        await redis.hset(`apikey:${apiKeyId}`, { last_used: Date.now().toString() });
     } else {
         await ensureLocalDb();
         const content = await fs.readFile(DB_PATH, 'utf-8');
@@ -412,7 +426,7 @@ export async function updateApiKeyLastUsed(apiKeyId: string) {
 
 export async function revokeApiKey(apiKeyId: string) {
     if (useCloud() && redis) {
-        await redis.hset(`apikey:${apiKeyId}`, { is_active: false });
+        await redis.hset(`apikey:${apiKeyId}`, { is_active: 'false' });
     } else {
         await ensureLocalDb();
         const content = await fs.readFile(DB_PATH, 'utf-8');
@@ -464,8 +478,13 @@ export async function createWebhook(userId: string, url: string, events: string[
 
     if (useCloud() && redis) {
         await redis.hset(`webhook:${webhookId}`, {
-            ...webhook,
-            events: JSON.stringify(events)
+            id: webhook.id,
+            user_id: webhook.user_id,
+            url: webhook.url,
+            events: JSON.stringify(events),
+            secret: webhook.secret || '',
+            is_active: webhook.is_active.toString(),
+            created_at: webhook.created_at.toString()
         });
         await redis.sadd(`user:${userId}:webhooks`, webhookId);
     } else {
