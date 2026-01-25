@@ -31,11 +31,143 @@
 
 ---
 
-## 🔌 Developer API (v1)
+## 🔌 Developer API
 
 PixEdge is built with a developer-first approach. You can programmatically upload images and retrieve metadata using our versioned REST API.
 
-### 1. Upload Media
+### API v2 (Recommended) - With Authentication
+
+API v2 introduces authentication, API keys, higher rate limits, and webhooks. Authentication is optional but recommended for production use.
+
+#### Authentication
+
+**Register a new account:**
+```bash
+POST /api/v2/auth/register
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "secure-password"
+}
+```
+
+**Login:**
+```bash
+POST /api/v2/auth/login
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "secure-password"
+}
+```
+
+**Get current user:**
+```bash
+GET /api/v2/auth/me
+Authorization: Bearer <token>
+# Or use the auth_token cookie set during login
+```
+
+#### API Keys
+
+Create API keys from the [Dashboard](/dashboard) or via API:
+
+**Create API Key:**
+```bash
+POST /api/v2/keys
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "name": "Production Key",
+  "rate_limit": 100
+}
+```
+
+**List API Keys:**
+```bash
+GET /api/v2/keys
+Authorization: Bearer <token>
+```
+
+**Use API Key:**
+```bash
+POST /api/v2/upload
+X-API-Key: px_your_api_key_here
+Content-Type: multipart/form-data
+```
+
+#### Upload with API v2
+
+**Endpoint:** `POST /api/v2/upload`  
+**Content-Type:** `multipart/form-data`  
+**Authentication:** Optional (API key or JWT token)
+
+| Parameter | Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| `file` | File | Yes | The image file to upload. |
+| `customId` | String | No | Custom vanity slug for the link. |
+
+**Rate Limits:**
+- Anonymous: 20 requests/minute
+- Authenticated (JWT): 50 requests/minute
+- API Key: Custom (default: 100 requests/minute)
+
+**Example Request (cURL with API Key):**
+```bash
+curl -X POST https://your-pixedge.com/api/v2/upload \
+  -H "X-API-Key: px_your_api_key_here" \
+  -F "file=@/path/to/image.jpg" \
+  -F "customId=my-awesome-link"
+```
+
+**Example Request (cURL with JWT):**
+```bash
+curl -X POST https://your-pixedge.com/api/v2/upload \
+  -H "Authorization: Bearer <your-jwt-token>" \
+  -F "file=@/path/to/image.jpg"
+```
+
+#### Webhooks
+
+Configure webhooks to receive notifications when images are uploaded or deleted:
+
+**Create Webhook:**
+```bash
+POST /api/v2/webhooks
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "url": "https://your-server.com/webhook",
+  "events": ["upload", "delete"]
+}
+```
+
+**Webhook Payload:**
+```json
+{
+  "event": "upload",
+  "timestamp": 1705500000000,
+  "data": {
+    "id": "image-id",
+    "url": "https://pixedge.link/i/image-id",
+    "size": 102400,
+    "type": "image/jpeg",
+    "created_at": 1705500000000
+  }
+}
+```
+
+---
+
+### API v1 (Legacy)
+
+The v1 API remains available for backward compatibility.
+
+#### 1. Upload Media
 **Endpoint:** `POST /api/v1/upload`  
 **Content-Type:** `multipart/form-data`
 
@@ -51,7 +183,7 @@ curl -X POST https://your-pixedge.com/api/v1/upload \
   -F "customId=my-awesome-link"
 ```
 
-### 2. Get Image Metadata
+#### 2. Get Image Metadata
 **Endpoint:** `GET /api/v1/info/[id]`
 
 **Example Response:**
@@ -100,7 +232,10 @@ TELEGRAM_CHAT_ID=your_id
 UPSTASH_REDIS_REST_URL=your_url
 UPSTASH_REDIS_REST_TOKEN=your_token
 NEXT_PUBLIC_BASE_URL=https://your-deployment.com
+JWT_SECRET=your-secret-key-change-in-production
 ```
+
+**Note:** `JWT_SECRET` is required for API v2 authentication. Use a strong, random secret in production.
 
 ### 3. One-Click Deploy
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fgeekluffy%2FPixEdge&env=TELEGRAM_BOT_TOKEN,TELEGRAM_CHAT_ID,UPSTASH_REDIS_REST_URL,UPSTASH_REDIS_REST_TOKEN,NEXT_PUBLIC_BASE_URL)

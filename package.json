@@ -12,7 +12,9 @@
     "@upstash/redis": "^1.36.1",
     "@vercel/analytics": "^1.6.1",
     "@vercel/kv": "^3.0.0",
+    "bcryptjs": "^2.4.3",
     "framer-motion": "latest",
+    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.562.0",
     "next": "latest",
     "qrcode.react": "^4.2.0",
@@ -20,6 +22,8 @@
     "react-dom": "latest"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
