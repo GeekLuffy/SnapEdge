@@ -407,7 +407,35 @@ export default function Home() {
                         />
 
                         <div className="upload-icon-container">
-                            <Upload size={24} />
+                            <svg 
+                                width="48" 
+                                height="48" 
+                                viewBox="0 0 48 48" 
+                                fill="none" 
+                                xmlns="http://www.w3.org/2000/svg"
+                                style={{
+                                    filter: 'drop-shadow(0 0 8px #00F0FF) drop-shadow(0 0 16px rgba(0, 240, 255, 0.5))'
+                                }}
+                            >
+                                {/* Cloud Outline */}
+                                <path 
+                                    d="M32 18C34.7614 18 37 20.2386 37 23C37 25.7614 34.7614 28 32 28H16C13.2386 28 11 25.7614 11 23C11 20.2386 13.2386 18 16 18C16.5 14.5 19.5 12 23 12C26.5 12 29.5 14.5 30 18H32Z" 
+                                    stroke="#00F0FF" 
+                                    strokeWidth="2" 
+                                    fill="none"
+                                    style={{
+                                        filter: 'drop-shadow(0 0 4px #00F0FF)'
+                                    }}
+                                />
+                                {/* Lightning Bolt */}
+                                <path 
+                                    d="M24 14L20 24H24L22 34L28 24H24L26 14H24Z" 
+                                    fill="#00F0FF"
+                                    style={{
+                                        filter: 'drop-shadow(0 0 6px #00F0FF) drop-shadow(0 0 12px rgba(0, 240, 255, 0.8))'
+                                    }}
+                                />
+                            </svg>
                         </div>
 
                         <div className="upload-text">
