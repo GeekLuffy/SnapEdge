@@ -142,7 +142,7 @@ export default function Home() {
 
     return (
         <>
-            {/* Top Navigation Chip - Part of Page (Scrolls away) */}
+            {/* Command Bar Navigation */}
             <motion.nav
                 initial={{ y: -100, x: "-50%", opacity: 0 }}
                 animate={{ y: 0, x: "-50%", opacity: 1 }}
@@ -151,30 +151,32 @@ export default function Home() {
                     top: '2rem',
                     left: '50%',
                     background: 'var(--panel-bg)',
-                    backdropFilter: 'blur(30px)',
+                    backdropFilter: 'blur(40px)',
                     border: '1px solid var(--border-color)',
-                    borderRadius: '100px',
+                    borderBottom: '2px solid var(--border-cyan)',
+                    borderRadius: '12px',
                     padding: '12px 32px',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '40px',
                     zIndex: 9999,
-                    boxShadow: '0 20px 50px rgba(0,0,0,0.2)',
+                    boxShadow: '0 0 20px var(--glow-cyan), 0 20px 50px rgba(0,0,0,0.8)',
                     whiteSpace: 'nowrap'
                 }}
             >
                 <Link href="/" style={{
                     color: 'var(--text-main)',
                     textDecoration: 'none',
-                    fontWeight: '800',
+                    fontWeight: '900',
                     fontSize: '1.6rem',
                     letterSpacing: '-1.5px',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '10px'
+                    gap: '10px',
+                    fontFamily: 'Inter, sans-serif'
                 }}>
-                    <Zap size={24} fill="var(--accent-primary)" color="var(--accent-primary)" />
-                    PixEdge
+                    <Zap size={24} fill="#00F0FF" color="#00F0FF" />
+                    <span>Pix<span style={{ color: '#00F0FF', textShadow: '0 0 10px rgba(0, 240, 255, 0.5)' }}>Edge</span></span>
                 </Link>
                 <Link href="/docs" style={{
                     color: 'var(--text-muted)',
@@ -184,8 +186,18 @@ export default function Home() {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px',
-                    transition: 'color 0.2s'
-                }}>
+                    transition: 'all 0.3s',
+                    fontFamily: 'Inter, sans-serif'
+                }}
+                onMouseEnter={(e) => {
+                    e.currentTarget.style.color = '#00F0FF';
+                    e.currentTarget.style.textShadow = '0 0 10px rgba(0, 240, 255, 0.5)';
+                }}
+                onMouseLeave={(e) => {
+                    e.currentTarget.style.color = 'var(--text-muted)';
+                    e.currentTarget.style.textShadow = 'none';
+                }}
+                >
                     <Code2 size={18} /> API Docs
                 </Link>
 
@@ -197,25 +209,44 @@ export default function Home() {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px',
-                    transition: 'color 0.2s'
-                }}>
+                    transition: 'all 0.3s',
+                    fontFamily: 'Inter, sans-serif'
+                }}
+                onMouseEnter={(e) => {
+                    e.currentTarget.style.color = '#00F0FF';
+                    e.currentTarget.style.textShadow = '0 0 10px rgba(0, 240, 255, 0.5)';
+                }}
+                onMouseLeave={(e) => {
+                    e.currentTarget.style.color = 'var(--text-muted)';
+                    e.currentTarget.style.textShadow = 'none';
+                }}
+                >
                     <LayoutDashboard size={18} /> Dashboard
                 </Link>
 
                 <button
                     onClick={toggleTheme}
                     style={{
-                        background: 'rgba(255, 255, 255, 0.05)',
+                        background: 'var(--bg-color)',
                         border: '1px solid var(--border-color)',
-                        borderRadius: '50px',
+                        borderRadius: '8px',
                         width: '40px',
                         height: '40px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         cursor: 'pointer',
-                        color: 'var(--text-main)',
-                        transition: 'all 0.3s'
+                        color: 'var(--accent-cyan)',
+                        transition: 'all 0.3s',
+                        boxShadow: '0 0 10px var(--glow-cyan)'
+                    }}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = '#00F0FF';
+                        e.currentTarget.style.boxShadow = '0 0 20px var(--glow-cyan-intense)';
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--border-color)';
+                        e.currentTarget.style.boxShadow = '0 0 10px var(--glow-cyan)';
                     }}
                 >
                     {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
@@ -238,53 +269,59 @@ export default function Home() {
                             marginBottom: '2rem'
                         }}>
                             <div style={{
-                                background: 'rgba(139, 92, 246, 0.1)',
+                                background: 'rgba(0, 240, 255, 0.1)',
                                 padding: '8px 16px',
                                 borderRadius: '100px',
                                 display: 'inline-flex',
                                 alignItems: 'center',
                                 gap: '8px',
-                                border: '1px solid rgba(139, 92, 246, 0.2)',
-                                color: '#8b5cf6',
+                                border: '1px solid rgba(0, 240, 255, 0.2)',
+                                color: '#00F0FF',
                                 fontSize: '0.85rem',
-                                fontWeight: '600'
+                                fontWeight: '600',
+                                fontFamily: 'JetBrains Mono, monospace'
                             }}>
-                                <Zap size={14} fill="#8b5cf6" />
+                                <Zap size={14} fill="#00F0FF" color="#00F0FF" />
                                 <span>Now powered by Upstash & Telegram</span>
                             </div>
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ delay: 0.3, duration: 0.5 }}
+                                className="cyber-pulse"
                                 style={{
-                                    background: 'rgba(251, 191, 36, 0.15)',
+                                    background: 'rgba(0, 240, 255, 0.1)',
                                     padding: '10px 20px',
                                     borderRadius: '100px',
                                     display: 'inline-flex',
                                     alignItems: 'center',
                                     gap: '8px',
-                                    border: '2px solid rgba(251, 191, 36, 0.4)',
-                                    color: '#fbbf24',
+                                    border: '2px solid #00F0FF',
+                                    color: '#00F0FF',
                                     fontSize: '0.9rem',
                                     fontWeight: '700',
-                                    boxShadow: '0 4px 20px rgba(251, 191, 36, 0.2)'
+                                    boxShadow: '0 0 20px rgba(0, 240, 255, 0.3)',
+                                    fontFamily: 'Inter, sans-serif'
                                 }}
                             >
                                 <span style={{
-                                    background: '#fbbf24',
+                                    background: '#00F0FF',
                                     color: '#000',
                                     padding: '2px 8px',
                                     borderRadius: '12px',
                                     fontSize: '0.75rem',
                                     fontWeight: '800',
-                                    letterSpacing: '0.5px'
+                                    letterSpacing: '0.5px',
+                                    textTransform: 'uppercase',
+                                    boxShadow: '0 0 10px rgba(0, 240, 255, 0.5)'
                                 }}>BETA</span>
                                 <span>API v2 is now available with Authentication & API Keys!</span>
                                 <Link href="/dashboard" style={{
-                                    color: '#fbbf24',
+                                    color: '#00F0FF',
                                     textDecoration: 'underline',
                                     fontWeight: '600',
-                                    marginLeft: '4px'
+                                    marginLeft: '4px',
+                                    textShadow: '0 0 10px rgba(0, 240, 255, 0.5)'
                                 }}>Get Started →</Link>
                             </motion.div>
                         </div>
@@ -294,8 +331,9 @@ export default function Home() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2, duration: 0.8 }}
+                        style={{ fontFamily: 'Inter, sans-serif' }}
                     >
-                        Media hosted,<br />at the edge.
+                        Media hosted,<br />at the <span className="cyber-glow">edge</span>.
                     </motion.h1>
                     <motion.p
                         initial={{ opacity: 0 }}
@@ -339,10 +377,17 @@ export default function Home() {
                                 color: 'var(--text-main)',
                                 fontSize: '0.9rem',
                                 outline: 'none',
-                                transition: 'all 0.2s'
+                                transition: 'all 0.3s',
+                                fontFamily: 'JetBrains Mono, monospace'
                             }}
-                            onFocus={(e) => e.target.style.borderColor = 'var(--accent-primary)'}
-                            onBlur={(e) => e.target.style.borderColor = 'var(--border-color)'}
+                            onFocus={(e) => {
+                                e.target.style.borderColor = '#00F0FF';
+                                e.target.style.boxShadow = '0 0 10px rgba(0, 240, 255, 0.3)';
+                            }}
+                            onBlur={(e) => {
+                                e.target.style.borderColor = 'var(--border-color)';
+                                e.target.style.boxShadow = 'none';
+                            }}
                         />
                     </div>
 
@@ -366,8 +411,16 @@ export default function Home() {
                         </div>
 
                         <div className="upload-text">
-                            <h3>{uploading ? 'Blasting at the edge...' : 'Drop image or video here'}</h3>
-                            <p style={{ color: 'var(--text-muted)', opacity: 0.6, fontSize: '0.8rem' }}>or click to browse your files</p>
+                            <h3 style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700, color: 'var(--text-main)' }}>
+                                {uploading ? 'Blasting at the edge...' : 'Drop image or video here'}
+                            </h3>
+                            <p style={{ 
+                                color: 'var(--text-muted)', 
+                                opacity: 0.6, 
+                                fontSize: '0.8rem',
+                                fontFamily: 'JetBrains Mono, monospace',
+                                letterSpacing: '0.05em'
+                            }}>or click to browse your files</p>
                         </div>
 
                         {uploading && (
@@ -392,12 +445,27 @@ export default function Home() {
                                 animate={{ opacity: 1, height: 'auto' }}
                                 exit={{ opacity: 0, height: 0 }}
                             >
-                                <div className="link-box">
-                                    <span className="link-text">{result.url}</span>
+                                <div className="link-box" style={{
+                                    background: 'var(--input-bg)',
+                                    border: '1px solid var(--border-color)',
+                                    borderRadius: '16px',
+                                    padding: '12px 16px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    gap: '12px'
+                                }}>
+                                    <span className="link-text" style={{
+                                        fontFamily: 'JetBrains Mono, monospace',
+                                        fontSize: '0.85rem',
+                                        color: 'var(--accent-cyan)',
+                                        whiteSpace: 'nowrap',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis'
+                                    }}>{result.url}</span>
                                     <div style={{ display: 'flex', gap: '8px' }}>
                                         <button
                                             className="copy-btn"
-                                            style={{ background: 'var(--input-bg)', color: 'var(--text-muted)' }}
                                             onClick={() => setShowQr(!showQr)}
                                         >
                                             <QrCode size={18} />
@@ -427,7 +495,25 @@ export default function Home() {
                                 )}
 
                                 <div style={{ marginTop: '1rem', textAlign: 'center' }}>
-                                    <a href={result.url} target="_blank" style={{ color: '#8b5cf6', fontSize: '0.8rem', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                                    <a href={result.url} target="_blank" style={{ 
+                                        color: '#00F0FF', 
+                                        fontSize: '0.8rem', 
+                                        textDecoration: 'none', 
+                                        display: 'flex', 
+                                        alignItems: 'center', 
+                                        justifyContent: 'center', 
+                                        gap: '4px',
+                                        fontFamily: 'JetBrains Mono, monospace',
+                                        textShadow: '0 0 10px rgba(0, 240, 255, 0.5)',
+                                        transition: 'all 0.3s'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.textShadow = '0 0 20px rgba(0, 240, 255, 0.8)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.textShadow = '0 0 10px rgba(0, 240, 255, 0.5)';
+                                    }}
+                                    >
                                         View Live Link <ExternalLink size={12} />
                                     </a>
                                 </div>
