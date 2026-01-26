@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
                     'HTML',
                     {
                         inline_keyboard: [[
-                            { text: "🌐 Visit Website", url: "https://voltedge.vercel.app" }
+                            { text: "🌐 Visit Website", url: "https://hunters.indevs.in/" }
                         ]]
                     }
                 );
@@ -158,7 +158,7 @@ async function processFile(chatId: number, fileId: string, fileSize: number, mim
         }
 
         const id = generateId();
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://voltedge.vercel.app';
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://hunters.indevs.in/';
 
         // 1. Forward to DB Channel with caption
         await sendMediaToChannel(fileId, `👤 <b>Uploaded by:</b> ${userLink}`, mediaType);

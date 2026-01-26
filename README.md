@@ -5,7 +5,7 @@
 [![Telegram](https://img.shields.io/badge/Telegram-26A5E4?style=for-the-badge&logo=telegram&logoColor=white)](https://telegram.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-**PixEdge** is a professional-grade, open-source image hosting platform designed for speed and infinite scalability. It leverages the Telegram Bot API as a decentralized storage backend and Upstash Redis for high-performance metadata management, delivering Media directly through edge redirection.
+**VoltEdge** is a professional-grade, open-source image hosting platform designed for speed and infinite scalability. It leverages the Telegram Bot API as a decentralized storage backend and Upstash Redis for high-performance metadata management, delivering Media directly through edge redirection.
 
 ---
 
@@ -117,7 +117,7 @@ Content-Type: multipart/form-data
 
 **Example Request (cURL with API Key):**
 ```bash
-curl -X POST https://your-pixedge.com/api/v2/upload \
+curl -X POST https://your-voltedge.com/api/v2/upload \
   -H "X-API-Key: px_your_api_key_here" \
   -F "file=@/path/to/image.jpg" \
   -F "customId=my-awesome-link"
@@ -125,7 +125,7 @@ curl -X POST https://your-pixedge.com/api/v2/upload \
 
 **Example Request (cURL with JWT):**
 ```bash
-curl -X POST https://your-pixedge.com/api/v2/upload \
+curl -X POST https://your-voltedge.com/api/v2/upload \
   -H "Authorization: Bearer <your-jwt-token>" \
   -F "file=@/path/to/image.jpg"
 ```
@@ -192,7 +192,7 @@ curl -X POST https://your-pixedge.com/api/v1/upload \
   "success": true,
   "data": {
     "id": "my-awesome-link",
-    "url": "https://pixedge.link/i/my-awesome-link",
+    "url": "https://voltedge.link/i/my-awesome-link",
     "views": 42,
     "created_at": 1705500000000,
     "metadata": {
@@ -238,7 +238,7 @@ JWT_SECRET=your-secret-key-change-in-production
 **Note:** `JWT_SECRET` is required for API v2 authentication. Use a strong, random secret in production.
 
 ### 3. One-Click Deploy
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fgeekluffy%2FPixEdge&env=TELEGRAM_BOT_TOKEN,TELEGRAM_CHAT_ID,UPSTASH_REDIS_REST_URL,UPSTASH_REDIS_REST_TOKEN,NEXT_PUBLIC_BASE_URL)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ftaslim19%2FCoreEdge&env=TELEGRAM_BOT_TOKEN,TELEGRAM_CHAT_ID,UPSTASH_REDIS_REST_URL,UPSTASH_REDIS_REST_TOKEN,NEXT_PUBLIC_BASE_URL)
 
 ---
 
@@ -285,8 +285,8 @@ graph LR
 
 Stay updated with the latest features and get support for PixEdge:
 
-- 📢 **Updates**: [@EdgeBots](https://t.me/EdgeBots)
-- 💬 **Support Group**: [@EdgeBotSupport](https://t.me/EdgeBotSupport)
+- 📢 **Updates**: [@Hunter_Update](https://t.me/Hunter_Update)
+- 💬 **Support Group**: [@Hunter_Supports](https://t.me/Hunter_Supports)
 
 ---
 
@@ -295,4 +295,5 @@ Distributed under the **MIT License**. Feel free to use, modify, and distribute 
 
 ---
 
-**Made with ❤️ by [Geekluffy](https://github.com/geekluffy)**
+**Forked from [GeekLuffy/PixEdge](https://github.com/GeekLuffy/PixEdge)**  
+**Contributions by [taslim19](https://github.com/taslim19)**
