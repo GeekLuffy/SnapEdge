@@ -16,6 +16,62 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body>
+                {/* Decorative Technical Elements */}
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    width: '100vw',
+                    height: '100vh',
+                    zIndex: -9,
+                    pointerEvents: 'none',
+                    overflow: 'hidden'
+                }}>
+                    {/* Top-left corner + icon */}
+                    <div style={{
+                        position: 'absolute',
+                        top: '5%',
+                        left: '5%',
+                        color: 'rgba(0, 240, 255, 0.1)',
+                        fontSize: '24px',
+                        fontFamily: 'monospace',
+                        fontWeight: 'bold'
+                    }}>+</div>
+                    
+                    {/* Top-right corner x icon */}
+                    <div style={{
+                        position: 'absolute',
+                        top: '5%',
+                        right: '5%',
+                        color: 'rgba(0, 240, 255, 0.1)',
+                        fontSize: '24px',
+                        fontFamily: 'monospace',
+                        fontWeight: 'bold'
+                    }}>×</div>
+                    
+                    {/* Bottom-left corner + icon */}
+                    <div style={{
+                        position: 'absolute',
+                        bottom: '5%',
+                        left: '5%',
+                        color: 'rgba(0, 240, 255, 0.1)',
+                        fontSize: '24px',
+                        fontFamily: 'monospace',
+                        fontWeight: 'bold'
+                    }}>+</div>
+                    
+                    {/* Bottom-right corner x icon */}
+                    <div style={{
+                        position: 'absolute',
+                        bottom: '5%',
+                        right: '5%',
+                        color: 'rgba(0, 240, 255, 0.1)',
+                        fontSize: '24px',
+                        fontFamily: 'monospace',
+                        fontWeight: 'bold'
+                    }}>×</div>
+                </div>
+                
                 {children}
                 <Analytics />
             </body>
