@@ -134,9 +134,9 @@ func main() {
 
     return (
         <main style={{
-            background: theme === 'dark' ? '#000000' : '#FFFFFF',
+            background: 'var(--bg-color)',
             minHeight: '100vh',
-            color: theme === 'dark' ? '#FFFFFF' : '#000000',
+            color: 'var(--text-main)',
             display: 'flex',
             fontFamily: "'Inter', sans-serif",
             transition: 'background 0.3s ease, color 0.3s ease'
