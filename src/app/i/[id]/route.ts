@@ -52,9 +52,9 @@ export async function GET(
             <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>PixEdge | ${id}</title>
-                <meta property="og:title" content="PixEdge Media">
-                <meta property="og:site_name" content="PixEdge">
+                <title>VoltEdge | ${id}</title>
+                <meta property="og:title" content="VoltEdge Media">
+                <meta property="og:site_name" content="VoltEdge">
                 ${record.metadata?.type?.startsWith('video/')
                 ? `<meta property="og:type" content="video.other">
                    <meta property="og:video" content="${proxiedImgSrc}">
@@ -124,7 +124,7 @@ export async function GET(
                 <div class="container">
                     ${record.metadata?.type?.startsWith('video/')
                 ? `<video src="${proxiedImgSrc}" autoplay loop muted playsinline controls></video>`
-                : `<img src="${proxiedImgSrc}" alt="PixEdge Image">`
+                : `<img src="${proxiedImgSrc}" alt="VoltEdge Image">`
             }
                 </div>
                 <div class="info-bar">

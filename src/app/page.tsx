@@ -31,12 +31,12 @@ export default function Home() {
 
     // Load history and theme from localStorage
     useEffect(() => {
-        const savedHistory = localStorage.getItem('pixedge_history');
+        const savedHistory = localStorage.getItem('voltedge_history');
         if (savedHistory) {
             try { setHistory(JSON.parse(savedHistory)); } catch (e) { console.error('Failed to load history', e); }
         }
 
-        const savedTheme = localStorage.getItem('pixedge_theme') as 'dark' | 'light';
+        const savedTheme = localStorage.getItem('voltedge_theme') as 'dark' | 'light';
         if (savedTheme) {
             setTheme(savedTheme);
             document.documentElement.setAttribute('data-theme', savedTheme);
@@ -50,13 +50,13 @@ export default function Home() {
         const newTheme = theme === 'dark' ? 'light' : 'dark';
         setTheme(newTheme);
         document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('pixedge_theme', newTheme);
+        localStorage.setItem('voltedge_theme', newTheme);
     };
 
     const saveToHistory = (item: HistoryItem) => {
         const newHistory = [item, ...history].slice(0, 5); // Keep last 5
         setHistory(newHistory);
-        localStorage.setItem('pixedge_history', JSON.stringify(newHistory));
+        localStorage.setItem('voltedge_history', JSON.stringify(newHistory));
     };
 
     const copyToClipboard = (text: string) => {
@@ -175,7 +175,7 @@ export default function Home() {
                     fontFamily: 'Inter, sans-serif'
                 }}>
                     <Zap size={24} fill="#00F0FF" color="#00F0FF" className="logo-pulse" />
-                    <span>Pix<span style={{ color: '#00F0FF', textShadow: '0 0 10px rgba(0, 240, 255, 0.5)' }}>Edge</span></span>
+                    <span>Volt<span style={{ color: '#00F0FF', textShadow: '0 0 10px rgba(0, 240, 255, 0.5)' }}>Edge</span></span>
                 </Link>
                 <Link href="/docs" style={{
                     color: 'var(--text-muted)',
@@ -560,7 +560,7 @@ export default function Home() {
 
                 {/* Telegram Bot CTA */}
                 <motion.a
-                    href="https://t.me/PixEdge_Bot"
+                    href="https://t.me/VoltEdge_Bot"
                     target="_blank"
                     rel="noopener noreferrer"
                     initial={{ opacity: 0, y: 10 }}

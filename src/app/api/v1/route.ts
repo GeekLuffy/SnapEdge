@@ -10,6 +10,6 @@ export async function GET() {
             upload: '/api/v1/upload',
             info: '/api/v1/info/[id]'
         },
-        message: 'PixEdge API v1 is active. Please refer to /docs for full integration details.'
+        message: 'VoltEdge API v1 is active. Please refer to /docs for full integration details.'
     });
 }

@@ -22,7 +22,7 @@ export default function Docs() {
 
     useEffect(() => {
         setBaseUrl(window.location.origin);
-        const savedTheme = localStorage.getItem('pixedge_theme') as 'dark' | 'light' | null;
+        const savedTheme = localStorage.getItem('voltedge_theme') as 'dark' | 'light' | null;
         const initialTheme = savedTheme || 'dark';
         setTheme(initialTheme);
         document.documentElement.setAttribute('data-theme', initialTheme);
@@ -32,7 +32,7 @@ export default function Docs() {
         const newTheme = theme === 'dark' ? 'light' : 'dark';
         setTheme(newTheme);
         document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('pixedge_theme', newTheme);
+        localStorage.setItem('voltedge_theme', newTheme);
     };
 
     const copyCode = (text: string, id: string) => {
@@ -85,8 +85,8 @@ func main() {
   "success": true,
   "data": {
     "id": "my-slug",
-    "url": "${baseUrl || 'https://pixedge.link'}/i/my-slug",
-    "direct_url": "${baseUrl || 'https://pixedge.link'}/i/my-slug.jpg",
+    "url": "${baseUrl || 'https://voltedge.link'}/i/my-slug",
+    "direct_url": "${baseUrl || 'https://voltedge.link'}/i/my-slug.jpg",
     "timestamp": 1705500000000
   }
 }`;
@@ -145,7 +145,7 @@ func main() {
             <header className="mobile-header">
                 <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'var(--text-main)' }}>
                     <Zap size={18} fill="var(--accent-color)" color="var(--accent-color)" />
-                    <span style={{ fontWeight: '900', fontSize: '1rem', fontFamily: "'Inter', sans-serif" }}>Pix<span style={{ color: 'var(--accent-color)' }}>Edge</span></span>
+                    <span style={{ fontWeight: '900', fontSize: '1rem', fontFamily: "'Inter', sans-serif" }}>Volt<span style={{ color: 'var(--accent-color)' }}>Edge</span></span>
                 </Link>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <button onClick={toggleTheme} style={{ 
@@ -182,7 +182,7 @@ func main() {
                     <div style={{ background: 'var(--accent-color)', padding: '6px', borderRadius: '8px', boxShadow: `0 0 10px var(--accent-glow)` }}>
                         <Zap size={20} fill={theme === 'dark' ? '#000000' : '#FFFFFF'} color={theme === 'dark' ? '#000000' : '#FFFFFF'} />
                     </div>
-                    <span style={{ fontWeight: '900', fontSize: '1.2rem', letterSpacing: '-0.5px', fontFamily: "'Inter', sans-serif" }}>Pix<span style={{ color: 'var(--accent-color)' }}>Edge</span></span>
+                    <span style={{ fontWeight: '900', fontSize: '1.2rem', letterSpacing: '-0.5px', fontFamily: "'Inter', sans-serif" }}>Volt<span style={{ color: 'var(--accent-color)' }}>Edge</span></span>
                 </Link>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
@@ -306,7 +306,7 @@ func main() {
                             fontFamily: "'JetBrains Mono', monospace",
                             boxShadow: `0 0 8px var(--accent-glow)`
                         }}>API v1.0.0</span>
-                        <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', margin: 0 }}>The complete reference for PixEdge developers.</p>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', margin: 0 }}>The complete reference for VoltEdge developers.</p>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.5px', fontFamily: "'JetBrains Mono', monospace" }}>
                         <ArrowLeft size={14} style={{ transform: 'rotate(90deg)' }} />
@@ -319,7 +319,7 @@ func main() {
                         <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                             <h2 style={{ fontSize: '1.8rem', color: 'var(--text-main)', marginBottom: '1.5rem' }}>Getting Started</h2>
                             <p style={{ color: 'var(--text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
-                                PixEdge provides a high-performance REST API for uploading and managing images, GIFs, and videos via our Telegram-backed edge storage.
+                                VoltEdge provides a high-performance REST API for uploading and managing images, GIFs, and videos via our Telegram-backed edge storage.
                                 Our storage is 100% free, decentralized, and infinitely scalable.
                             </p>
                             <div style={{
@@ -349,7 +349,7 @@ func main() {
                             <div style={{ marginBottom: '2rem' }}>
                                 <h3 style={{ fontSize: '1.3rem', color: 'var(--text-main)', marginBottom: '1rem' }}>API v1 (Public Access)</h3>
                                 <p style={{ color: 'var(--text-muted)', lineHeight: '1.7', marginBottom: '1rem' }}>
-                                    The PixEdge Public API v1 is **open access**. No API keys are required to upload or retrieve image metadata.
+                                    The VoltEdge Public API v1 is **open access**. No API keys are required to upload or retrieve image metadata.
                                     However, to prevent abuse, we implement global rate limiting based on IP addresses (20 requests/minute).
                                 </p>
                             </div>
@@ -411,7 +411,7 @@ func main() {
                             </div>
 
                             <p style={{ color: 'var(--text-muted)', lineHeight: '1.7', marginBottom: '2rem' }}>
-                                Retrieve real-time statistics and deep metadata for any image hosted on PixEdge.
+                                Retrieve real-time statistics and deep metadata for any image hosted on VoltEdge.
                             </p>
 
                             <div style={{ background: 'var(--code-bg)', border: '1px solid var(--border-color-subtle)', borderRadius: '20px', padding: '20px' }}>
@@ -421,7 +421,7 @@ func main() {
   "success": true,
   "data": {
     "id": "example-id",
-    "url": "https://pixedge.link/i/example-id",
+    "url": "https://voltedge.link/i/example-id",
     "views": 42,
     "created_at": 1705500000000,
     "metadata": {
@@ -516,7 +516,7 @@ func main() {
                         <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                             <h2 style={{ fontSize: '1.8rem', color: 'var(--text-main)', marginBottom: '1.5rem' }}>Rate Limiting</h2>
                             <p style={{ color: 'var(--text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
-                                To ensure peak performance for all PixEdge users, we implement a fair-use rate limiting policy. Limits are applied per IP address.
+                                To ensure peak performance for all VoltEdge users, we implement a fair-use rate limiting policy. Limits are applied per IP address.
                             </p>
                             <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '2rem' }}>
                                 <thead>
@@ -549,7 +549,7 @@ func main() {
                         <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                             <h2 style={{ fontSize: '1.8rem', color: 'var(--text-main)', marginBottom: '1.5rem' }}>Error Codes</h2>
                             <p style={{ color: 'var(--text-muted)', lineHeight: '1.7', marginBottom: '2rem' }}>
-                                PixEdge uses standard HTTP response codes to indicate the success or failure of an API request. All error responses follow this JSON structure:
+                                VoltEdge uses standard HTTP response codes to indicate the success or failure of an API request. All error responses follow this JSON structure:
                             </p>
                             <div style={{ background: 'var(--code-bg)', border: '1px solid var(--border-color-subtle)', borderRadius: '20px', padding: '20px', marginBottom: '2rem' }}>
                                 <pre style={{ margin: 0 }}>
@@ -591,7 +591,7 @@ func main() {
                         <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                             <h2 style={{ fontSize: '1.8rem', color: 'var(--text-main)', marginBottom: '1.5rem' }}>Telegram Bot Integration</h2>
                             <p style={{ color: 'var(--text-muted)', lineHeight: '1.7', marginBottom: '1.5rem' }}>
-                                PixEdge comes with a built-in Telegram Bot that allows you to upload images directly from your chat. No API calls or dashboard visits required.
+                                VoltEdge comes with a built-in Telegram Bot that allows you to upload images directly from your chat. No API calls or dashboard visits required.
                             </p>
 
                             <div style={{ background: 'var(--code-bg)', border: '1px solid var(--border-color-subtle)', borderRadius: '20px', padding: '20px', marginBottom: '2rem' }}>
@@ -626,7 +626,7 @@ func main() {
                         <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
                             <h2 style={{ fontSize: '1.8rem', color: 'var(--text-main)', marginBottom: '1.5rem' }}>Official SDKs</h2>
                             <p style={{ color: 'var(--text-muted)', lineHeight: '1.7', marginBottom: '2rem' }}>
-                                We are developing official libraries to help you integrate PixEdge into your projects even faster. Coming soon to all major package managers.
+                                We are developing official libraries to help you integrate VoltEdge into your projects even faster. Coming soon to all major package managers.
                             </p>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
                                 {['Node.js', 'Python', 'Go', 'PHP'].map(sdk => (

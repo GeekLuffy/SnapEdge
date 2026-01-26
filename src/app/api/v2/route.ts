@@ -32,7 +32,7 @@ export async function GET() {
             upload: '/api/v2/upload',
             info: '/api/v1/info/[id]'
         },
-        message: 'PixEdge API v2 is in BETA. Authentication is optional but recommended for higher rate limits.',
+        message: 'VoltEdge API v2 is in BETA. Authentication is optional but recommended for higher rate limits.',
         beta_notice: 'This API version is currently in beta. Features may change before stable release.'
     });
 }

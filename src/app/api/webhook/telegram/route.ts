@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
                 }
 
                 await sendMessage(chatId,
-                    `✨ <b>PixEdge Bot Help</b>\n\n` +
+                    `✨ <b>VoltEdge Bot Help</b>\n\n` +
                     `I can host your media at lightning speed using our edge infrastructure.\n\n` +
                     `🚀 <b>How to Upload:</b>\n` +
                     `• Send a <b>Photo/Video/GIF</b> directly to me.\n` +
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
                     'HTML',
                     {
                         inline_keyboard: [[
-                            { text: "🌐 Visit Website", url: "https://pixedge.vercel.app" }
+                            { text: "🌐 Visit Website", url: "https://voltedge.vercel.app" }
                         ]]
                     }
                 );
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
             if (command === '/stats') {
                 const stats = await getStats();
                 await sendMessage(chatId,
-                    `📊 <b>PixEdge Statistics</b>\n\n` +
+                    `📊 <b>VoltEdge Statistics</b>\n\n` +
                     `👥 <b>Total Users:</b> ${stats.totalUsers}\n` +
                     `🖼️ <b>Images:</b> ${stats.totalImages}\n` +
                     `🎬 <b>Videos/GIFs:</b> ${stats.totalVideos}\n` +
@@ -87,11 +87,11 @@ export async function POST(req: NextRequest) {
 
                 // If not a reply, show instructions
                 await sendMessage(chatId,
-                    `<b>PixEdge Upload Mode:</b>\n\n` +
+                    `<b>VoltEdge Upload Mode:</b>\n\n` +
                     `1. Directly send a photo to this bot.\n` +
                     `2. Or send an image as a "File/Document".\n` +
                     `3. Or <b>reply</b> to an image with /upload.\n\n` +
-                    `I will instantly return a high-speed PixEdge link!`
+                    `I will instantly return a high-speed VoltEdge link!`
                 );
                 return new NextResponse('OK');
             }
@@ -158,7 +158,7 @@ async function processFile(chatId: number, fileId: string, fileSize: number, mim
         }
 
         const id = generateId();
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://pixedge.vercel.app';
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://voltedge.vercel.app';
 
         // 1. Forward to DB Channel with caption
         await sendMediaToChannel(fileId, `👤 <b>Uploaded by:</b> ${userLink}`, mediaType);
@@ -179,7 +179,7 @@ async function processFile(chatId: number, fileId: string, fileSize: number, mim
         await sendMessage(chatId,
             `✅ <b>File Uploaded Successfully!</b>\n\n` +
             `🔗 <b>Link:</b> ${publicUrl}\n` +
-            `⚡ <i>Hosted on PixEdge</i>`,
+            `⚡ <i>Hosted on VoltEdge</i>`,
             'HTML'
         );
 

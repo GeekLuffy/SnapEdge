@@ -539,12 +539,12 @@ export async function triggerWebhook(webhook: Webhook, event: string, data: any)
 
         const headers: Record<string, string> = {
             'Content-Type': 'application/json',
-            'User-Agent': 'PixEdge-Webhook/1.0'
+            'User-Agent': 'VoltEdge-Webhook/1.0'
         };
 
         if (webhook.secret) {
             // In production, you'd sign the payload with the secret
-            headers['X-PixEdge-Signature'] = webhook.secret; // Simplified
+            headers['X-VoltEdge-Signature'] = webhook.secret; // Simplified
         }
 
         await fetch(webhook.url, {
