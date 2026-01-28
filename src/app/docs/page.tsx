@@ -775,7 +775,7 @@ func main() {
                                             File
                                         </td>
                                         <td style={{ padding: "12px", color: "var(--text-muted)" }}>
-                                            Multipart file (Image/GIF/Video, max 10MB)
+                                            Multipart file (Image/GIF/Video, max 20MB)
                                         </td>
                                     </tr>
                                     <tr style={{ borderBottom: "1px solid var(--border-color)" }}>

@@ -110,9 +110,9 @@ export default function Home() {
             return;
         }
 
-        // 10MB Limit Check
-        if (file.size > 10 * 1024 * 1024) {
-            alert("File too large. Max size is 10MB.");
+        // 20MB Limit Check (Telegram getFile API limit)
+        if (file.size > 20 * 1024 * 1024) {
+            alert("File too large. Max size is 20MB.");
             return;
         }
 

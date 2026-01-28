@@ -152,10 +152,10 @@ export async function POST(req: NextRequest) {
 
 async function processFile(chatId: number, fileId: string, fileSize: number, mimeType: string, userLink: string, userId: number | string, mediaType: 'photo' | 'animation' | 'video' | 'document') {
     try {
-        // Enforce 10MB limit
-        const MAX_SIZE = 10 * 1024 * 1024;
+        // Enforce 20MB limit (Telegram getFile API limit)
+        const MAX_SIZE = 20 * 1024 * 1024;
         if (fileSize > MAX_SIZE) {
-            await sendMessage(chatId, "❌ File too large. Max size is 10MB.");
+            await sendMessage(chatId, "❌ File too large. Max size is 20MB.");
             return;
         }
 
