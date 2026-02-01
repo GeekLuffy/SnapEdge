@@ -1,8 +1,52 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { uploadToTelegram, sendLog } from '@/lib/telegram';
-import { saveImage, generateId, rateLimit } from '@/lib/db';
+import { saveImage, generateId, rateLimit, getImage } from '@/lib/db';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+
+// Validate custom ID format
+function validateCustomId(id: string): { valid: boolean; error?: string; sanitized?: string } {
+    if (!id || id.trim().length === 0) {
+        return { valid: false, error: 'Custom ID cannot be empty' };
+    }
+    
+    // Sanitize: lowercase, replace spaces and invalid chars with hyphens
+    const sanitized = id.toLowerCase()
+        .trim()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '');
+    
+    if (sanitized.length < 2) {
+        return { valid: false, error: 'Custom ID must be at least 2 characters' };
+    }
+    
+    if (sanitized.length > 32) {
+        return { valid: false, error: 'Custom ID must be 32 characters or less' };
+    }
+    
+    // Reserved IDs
+    const reserved = ['api', 'admin', 'dashboard', 'login', 'docs', 'upload', 'i', 'static'];
+    if (reserved.includes(sanitized)) {
+        return { valid: false, error: 'This ID is reserved' };
+    }
+    
+    return { valid: true, sanitized };
+}
+
+// Generate alternative suggestions
+function generateSuggestions(baseId: string): string[] {
+    const suggestions: string[] = [];
+    const timestamp = Date.now().toString(36).slice(-4);
+    const random = () => Math.random().toString(36).slice(-3);
+    
+    suggestions.push(`${baseId}-${timestamp}`);
+    suggestions.push(`${baseId}-${random()}`);
+    suggestions.push(`${baseId}${Math.floor(Math.random() * 999)}`);
+    
+    return suggestions;
+}
 
 export async function POST(req: NextRequest) {
     // Get user session (optional - uploads work without login too)
@@ -53,10 +97,38 @@ export async function POST(req: NextRequest) {
         if (file.type.startsWith('video/')) mediaType = 'video';
         if (file.type === 'image/gif') mediaType = 'animation';
 
-        const telegramResult = await uploadToTelegram(file, 'upload', '📦 <b>Uploaded in web</b>', mediaType);
+        // 2. Generate or validate ID
+        let id: string;
+        
+        if (customId) {
+            const validation = validateCustomId(customId);
+            if (!validation.valid) {
+                return NextResponse.json({
+                    success: false,
+                    error: { code: 'INVALID_CUSTOM_ID', message: validation.error }
+                }, { status: 400 });
+            }
+            
+            id = validation.sanitized!;
+            
+            // Check if ID already exists
+            const existing = await getImage(id);
+            if (existing) {
+                const suggestions = generateSuggestions(id);
+                return NextResponse.json({
+                    success: false,
+                    error: {
+                        code: 'ID_ALREADY_EXISTS',
+                        message: `The ID "${id}" is already taken`,
+                        suggestions
+                    }
+                }, { status: 409 });
+            }
+        } else {
+            id = generateId();
+        }
 
-        // 2. Generate ID
-        const id = customId ? customId.toLowerCase().replace(/[^a-z0-9-]/g, '-') : generateId();
+        const telegramResult = await uploadToTelegram(file, 'upload', '📦 <b>Uploaded in web</b>', mediaType);
 
         const record = {
             id,

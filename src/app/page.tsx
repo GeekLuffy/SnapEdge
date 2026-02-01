@@ -19,6 +19,8 @@ import {
     Sun,
     Moon,
     MessageSquare,
+    AlertCircle,
+    X,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
@@ -46,6 +48,8 @@ export default function Home() {
     const [isHistoryOpen, setIsHistoryOpen] = useState(false);
     const [showToast, setShowToast] = useState(false);
     const [theme, setTheme] = useState<"dark" | "light">("dark");
+    const [idError, setIdError] = useState<{ message: string; suggestions: string[] } | null>(null);
+    const [pendingFile, setPendingFile] = useState<File | null>(null);
 
     // Load history and theme from localStorage
     useEffect(() => {
@@ -123,6 +127,8 @@ export default function Home() {
         setUploadStatus("Preparing upload...");
         setResult(null);
         setShowQr(false);
+        setIdError(null);
+        setPendingFile(file);
 
         const formData = new FormData();
         formData.append("file", file);
@@ -132,7 +138,7 @@ export default function Home() {
             // Use XMLHttpRequest for progress tracking
             const result = await new Promise<any>((resolve, reject) => {
                 const xhr = new XMLHttpRequest();
-                
+
                 xhr.upload.addEventListener("progress", (e) => {
                     if (e.lengthComputable) {
                         const percent = Math.round((e.loaded / e.total) * 100);
@@ -172,13 +178,20 @@ export default function Home() {
 
             // Handle ID collision with suggestions
             if (!result.success && result.error?.code === "ID_ALREADY_EXISTS") {
-                const suggestions = result.error.suggestions || [];
-                const suggestionText =
-                    suggestions.length > 0
-                        ? `\n\nSuggested alternatives:\n${suggestions.map((s: string) => `• ${s}`).join("\n")}`
-                        : "";
+                setIdError({
+                    message: result.error.message,
+                    suggestions: result.error.suggestions || []
+                });
+                setUploading(false);
+                return;
+            }
 
-                alert(`${result.error.message}${suggestionText}`);
+            // Handle invalid custom ID
+            if (!result.success && result.error?.code === "INVALID_CUSTOM_ID") {
+                setIdError({
+                    message: result.error.message,
+                    suggestions: []
+                });
                 setUploading(false);
                 return;
             }
@@ -187,7 +200,8 @@ export default function Home() {
 
             setUploadStatus("Complete!");
             setUploadProgress(100);
-            
+            setPendingFile(null);
+
             const data = result.data;
             setResult(data);
             saveToHistory({
@@ -198,9 +212,79 @@ export default function Home() {
             setCustomId("");
         } catch (err: any) {
             alert(err.message || "Upload failed");
+            setPendingFile(null);
         } finally {
             setUploading(false);
             setIsDragging(false);
+        }
+    };
+
+    // Retry upload with a suggested ID
+    const retryWithSuggestion = async (suggestion: string) => {
+        setIdError(null);
+        setCustomId(suggestion);
+        if (pendingFile) {
+            const file = pendingFile;
+            // Small delay to let state update
+            setTimeout(() => uploadFileWithId(file, suggestion), 50);
+        }
+    };
+
+    // Upload with specific custom ID (for retries)
+    const uploadFileWithId = async (file: File, id: string) => {
+        setUploading(true);
+        setUploadProgress(0);
+        setUploadStatus("Retrying upload...");
+        setIdError(null);
+
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("customId", id);
+
+        try {
+            const result = await new Promise<any>((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+
+                xhr.upload.addEventListener("progress", (e) => {
+                    if (e.lengthComputable) {
+                        const percent = Math.round((e.loaded / e.total) * 100);
+                        setUploadProgress(percent);
+                        if (percent < 100) {
+                            setUploadStatus(`Uploading... ${percent}%`);
+                        } else {
+                            setUploadStatus("Processing at edge...");
+                        }
+                    }
+                });
+
+                xhr.addEventListener("load", () => {
+                    try {
+                        const json = JSON.parse(xhr.responseText);
+                        resolve(json);
+                    } catch {
+                        reject(new Error("Upload failed"));
+                    }
+                });
+
+                xhr.addEventListener("error", () => reject(new Error("Network error")));
+                xhr.open("POST", "/api/v1/upload");
+                xhr.send(formData);
+            });
+
+            if (!result.success) throw new Error(result.error?.message || "Upload failed");
+
+            setUploadStatus("Complete!");
+            setUploadProgress(100);
+            setPendingFile(null);
+
+            const data = result.data;
+            setResult(data);
+            saveToHistory({ id: data.id, url: data.url, timestamp: Date.now() });
+            setCustomId("");
+        } catch (err: any) {
+            alert(err.message || "Upload failed");
+        } finally {
+            setUploading(false);
         }
     };
 
@@ -216,6 +300,27 @@ export default function Home() {
         const file = e.dataTransfer.files[0];
         if (file) uploadFile(file);
     };
+
+    useEffect(() => {
+        const handlePaste = (e: ClipboardEvent) => {
+            const items = e.clipboardData?.items;
+            if (!items) return;
+
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].kind === 'file') {
+                    const file = items[i].getAsFile();
+                    if (file && (file.type.startsWith("image/") || file.type.startsWith("video/"))) {
+                        e.preventDefault();
+                        uploadFile(file);
+                        return; // Only upload the first valid file
+                    }
+                }
+            }
+        };
+
+        window.addEventListener("paste", handlePaste);
+        return () => window.removeEventListener("paste", handlePaste);
+    }, [uploadFile]);
 
     return (
         <>
@@ -429,17 +534,18 @@ export default function Home() {
                         </div>
                         <input
                             type="text"
-                            placeholder="Custom File Name (Optional)"
+                            placeholder="Custom Link Name (Optional)"
                             value={customId}
-                            onChange={(e) =>
+                            onChange={(e) => {
                                 setCustomId(
                                     e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-"),
-                                )
-                            }
+                                );
+                                setIdError(null);
+                            }}
                             style={{
                                 width: "100%",
                                 background: "var(--input-bg)",
-                                border: "1px solid var(--border-color)",
+                                border: `1px solid ${idError ? "rgba(239, 68, 68, 0.5)" : "var(--border-color)"}`,
                                 borderRadius: "16px",
                                 padding: "12px 12px 12px 40px",
                                 color: "var(--text-main)",
@@ -448,13 +554,195 @@ export default function Home() {
                                 transition: "all 0.2s",
                             }}
                             onFocus={(e) =>
-                                (e.target.style.borderColor = "var(--accent-primary)")
+                                (e.target.style.borderColor = idError ? "rgba(239, 68, 68, 0.7)" : "var(--accent-primary)")
                             }
                             onBlur={(e) =>
-                                (e.target.style.borderColor = "var(--border-color)")
+                                (e.target.style.borderColor = idError ? "rgba(239, 68, 68, 0.5)" : "var(--border-color)")
                             }
                         />
                     </div>
+
+                    {/* ID Error with Suggestions */}
+                    <AnimatePresence>
+                        {idError && (
+                            <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: "auto" }}
+                                exit={{ opacity: 0, height: 0 }}
+                                style={{
+                                    background: "rgba(239, 68, 68, 0.08)",
+                                    border: "1px solid rgba(239, 68, 68, 0.2)",
+                                    borderRadius: "16px",
+                                    padding: "1rem",
+                                    marginBottom: "1.5rem",
+                                }}
+                            >
+                                <div style={{ display: "flex", alignItems: "flex-start", gap: "10px", marginBottom: "12px" }}>
+                                    <AlertCircle size={18} style={{ color: "#f87171", flexShrink: 0, marginTop: "2px" }} />
+                                    <div style={{ flex: 1 }}>
+                                        <p style={{ color: "#f87171", fontWeight: 500, fontSize: "0.9rem", margin: 0 }}>
+                                            {idError.message}
+                                        </p>
+                                    </div>
+                                    <button
+                                        onClick={() => { setIdError(null); setPendingFile(null); }}
+                                        style={{
+                                            background: "transparent",
+                                            border: "none",
+                                            color: "#f87171",
+                                            cursor: "pointer",
+                                            padding: "2px",
+                                            display: "flex"
+                                        }}
+                                    >
+                                        <X size={16} />
+                                    </button>
+                                </div>
+
+                                {idError.suggestions.length > 0 && (
+                                    <div style={{ marginBottom: "12px" }}>
+                                        <p style={{ color: "var(--text-muted)", fontSize: "0.8rem", marginBottom: "8px" }}>
+                                            Try one of these instead:
+                                        </p>
+                                        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                                            {idError.suggestions.map((suggestion) => (
+                                                <motion.button
+                                                    key={suggestion}
+                                                    whileHover={{ scale: 1.02 }}
+                                                    whileTap={{ scale: 0.98 }}
+                                                    onClick={() => retryWithSuggestion(suggestion)}
+                                                    style={{
+                                                        background: "var(--input-bg)",
+                                                        border: "1px solid var(--border-color)",
+                                                        borderRadius: "10px",
+                                                        padding: "8px 14px",
+                                                        color: "var(--accent-primary)",
+                                                        fontSize: "0.85rem",
+                                                        fontWeight: 500,
+                                                        cursor: "pointer",
+                                                        fontFamily: "monospace",
+                                                        transition: "all 0.2s",
+                                                    }}
+                                                >
+                                                    {suggestion}
+                                                </motion.button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Retry with current custom name */}
+                                {pendingFile && customId && (
+                                    <motion.button
+                                        whileHover={{ scale: 1.02 }}
+                                        whileTap={{ scale: 0.98 }}
+                                        onClick={() => {
+                                            setIdError(null);
+                                            uploadFileWithId(pendingFile, customId);
+                                        }}
+                                        style={{
+                                            width: "100%",
+                                            padding: "10px 16px",
+                                            background: "var(--accent-primary)",
+                                            border: "none",
+                                            borderRadius: "10px",
+                                            color: "#fff",
+                                            fontSize: "0.85rem",
+                                            fontWeight: 500,
+                                            cursor: "pointer",
+                                            fontFamily: "inherit",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            gap: "8px",
+                                        }}
+                                    >
+                                        <Upload size={16} />
+                                        Retry with "{customId}"
+                                    </motion.button>
+                                )}
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    {/* Pending file retry (when error is dismissed but file still there) */}
+                    <AnimatePresence>
+                        {!idError && pendingFile && !uploading && (
+                            <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: "auto" }}
+                                exit={{ opacity: 0, height: 0 }}
+                                style={{
+                                    background: "rgba(139, 92, 246, 0.08)",
+                                    border: "1px solid rgba(139, 92, 246, 0.2)",
+                                    borderRadius: "16px",
+                                    padding: "1rem",
+                                    marginBottom: "1.5rem",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                    gap: "12px",
+                                }}
+                            >
+                                <div style={{ display: "flex", alignItems: "center", gap: "10px", flex: 1, minWidth: 0 }}>
+                                    <ImageIcon size={18} style={{ color: "var(--accent-primary)", flexShrink: 0 }} />
+                                    <span style={{
+                                        color: "var(--text-main)",
+                                        fontSize: "0.85rem",
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                        whiteSpace: "nowrap"
+                                    }}>
+                                        {pendingFile.name}
+                                    </span>
+                                </div>
+                                <div style={{ display: "flex", gap: "8px", flexShrink: 0 }}>
+                                    <motion.button
+                                        whileHover={{ scale: 1.02 }}
+                                        whileTap={{ scale: 0.98 }}
+                                        onClick={() => {
+                                            if (customId) {
+                                                uploadFileWithId(pendingFile, customId);
+                                            } else {
+                                                uploadFile(pendingFile);
+                                            }
+                                        }}
+                                        style={{
+                                            padding: "8px 16px",
+                                            background: "var(--accent-primary)",
+                                            border: "none",
+                                            borderRadius: "8px",
+                                            color: "#fff",
+                                            fontSize: "0.8rem",
+                                            fontWeight: 500,
+                                            cursor: "pointer",
+                                            fontFamily: "inherit",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "6px",
+                                        }}
+                                    >
+                                        <Upload size={14} />
+                                        Upload
+                                    </motion.button>
+                                    <button
+                                        onClick={() => setPendingFile(null)}
+                                        style={{
+                                            padding: "8px",
+                                            background: "var(--input-bg)",
+                                            border: "1px solid var(--border-color)",
+                                            borderRadius: "8px",
+                                            color: "var(--text-muted)",
+                                            cursor: "pointer",
+                                            display: "flex",
+                                        }}
+                                    >
+                                        <X size={14} />
+                                    </button>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
 
                     <div
                         className={`drop-zone ${isDragging ? "active" : ""}`}
@@ -468,9 +756,12 @@ export default function Home() {
                             id="file-upload"
                             className="file-input"
                             accept="image/*,video/*"
-                            onChange={(e) =>
-                                e.target.files?.[0] && uploadFile(e.target.files[0])
-                            }
+                            onChange={(e) => {
+                                if (e.target.files?.[0]) {
+                                    uploadFile(e.target.files[0]);
+                                    e.target.value = ''; // Reset so same file can be re-selected
+                                }
+                            }}
                         />
 
                         <div className="upload-icon-container">
